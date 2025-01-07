@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviews Received</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .reviews-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .review-section {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        textarea,
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .admin-review {
+            border: 1px solid #e0e0e0;
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+
+        .admin-review h3 {
+            margin-top: 0;
+            font-size: 1.2em;
+        }
+
+        .admin-review p {
+            margin: 0;
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="reviews-container">
+        <!-- Title -->
+        <h1>Reviews Received</h1>
+
+        <!-- Paper Title Section -->
+        <div class="review-section">
+            <label for="paper-title">Paper Title</label>
+            <textarea id="paper-title" placeholder="Enter the title of the paper..." rows="2"></textarea>
+        </div>
+
+        <!-- Admin's Email Section -->
+        <div class="review-section">
+            <label for="admin-email">Admin's Email</label>
+            <input id="admin-email" type="email" placeholder="Enter admin email here...">
+        </div>
+
+        <!-- Admin Reviews Section -->
+        <div class="admin-review">
+            <h3>Admin Review</h3>
+            <p>No reviews available yet. Admin will provide feedback here.</p>
+        </div>
+    </div>
+</body>
+</html>
+

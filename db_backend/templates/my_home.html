@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Papers</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Published Research Papers</h1>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="alert alert-dismissible fade show" role="alert">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Search and Filter Form -->
+        <form method="GET" action="{{ url_for('my_home') }}" class="mb-4">
+            <div class="form-row">
+                <div class="col-md-4 mb-3">
+                    <input type="text" name="search" class="form-control" placeholder="Search by title or keyword" value="{{ request.args.get('search', '') }}">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <input type="text" id="article_name" name="article_name" class="form-control" placeholder="Article Name" value="{{ request.args.get('article_name', '') }}">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <input type="text" id="author" name="author" class="form-control" placeholder="Author" value="{{ request.args.get('author', '') }}">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-4 mb-3">
+                    <select name="theme" class="form-control">
+                        <option value="">All</option>
+                        <option value="Natural Science" {% if request.args.get('theme') == 'Natural Science' %}selected{% endif %}>Natural Science</option>
+                        <option value="Social Science" {% if request.args.get('theme') == 'Social Science' %}selected{% endif %}>Social Science</option>
+                        <option value="Formal Science" {% if request.args.get('theme') == 'Formal Science' %}selected{% endif %}>Formal Science</option>
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <select name="sort_by_date" class="form-control">
+                        <option value="latest" {% if request.args.get('sort_by_date') == 'latest' %}selected{% endif %}>Latest</option>
+                        <option value="oldest" {% if request.args.get('sort_by_date') == 'oldest' %}selected{% endif %}>Oldest</option>
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <button type="submit" class="btn btn-primary btn-block">Search</button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Published Papers List -->
+        {% if papers %}
+            <div class="list-group">
+                {% for paper in papers %}
+                    <a href="{{ url_for('view_paper', paper_id=paper.id) }}" class="list-group-item list-group-item-action">
+                        <h5 class="mb-1">{{ paper.title }}</h5>
+                        <p class="mb-1"><strong>Author:</strong> {{ paper.author.first_name }} {{ paper.author.last_name }}</p>
+                        <p class="mb-1"><strong>Theme:</strong> {{ paper.theme }}</p>
+                        <small><strong>Publish Date:</strong> {{ paper.publish_date.strftime('%Y-%m-%d') }}</small>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No published papers found.</p>
+        {% endif %}
+
+        <!-- My Profile Access -->
+        <p class="mt-4">See your paper progress and submit a paper here: <a href="{{ url_for('my_profile') }}" class="btn btn-secondary">My Profile</a></p>
+    </div>
+
+    <!-- Chatbot Widget -->
+    <div id="chatbot" class="card" style="position: fixed; bottom: 20px; right: 20px; width: 300px;">
+        <div class="card-header">
+            <h4>Chatbot</h4>
+        </div>
+        <div class="card-body">
+            <div id="chat-log" style="height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 5px; margin-bottom: 10px;"></div>
+            <div class="input-group">
+                <input type="text" id="userInput" class="form-control" placeholder="Type your question...">
+                <div class="input-group-append">
+                    <button onclick="sendMessage()" class="btn btn-primary">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        function sendMessage() {
+            const message = document.getElementById("userInput").value;
+            if (!message) return;
+
+            // Append user message to the chat log
+            const chatLog = document.getElementById("chat-log");
+            chatLog.innerHTML += `<p><b>You:</b> ${message}</p>`;
+
+            // Send the message to the backend
+            fetch('/chatbot', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Append the bot's response to the chat log
+                chatLog.innerHTML += `<p><b>Bot:</b> ${data.response}</p>`;
+                document.getElementById("userInput").value = ''; // Clear the input field
+                chatLog.scrollTop = chatLog.scrollHeight; // Scroll to the bottom
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviewer Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .paper-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .paper-item {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f9f9f9;
+        }
+
+        .actions {
+            margin-top: 10px;
+        }
+
+        .actions a {
+            margin-right: 10px;
+            text-decoration: none;
+            color: #007BFF;
+        }
+
+        .actions a:hover {
+            text-decoration: underline;
+        }
+
+        .go-to-reviewing-page {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .go-to-reviewing-page button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .go-to-reviewing-page button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <h1>Reviewer Dashboard</h1>
+    <p><a href="{{ url_for('my_home') }}">Back to Home</a></p>
+
+    <h2>Assigned Papers</h2>
+    <ul class="paper-list">
+        {% for paper in assigned_papers %}
+        <li class="paper-item">
+            <strong>{{ paper.title }}</strong><br>
+            <small>Author: {{ paper.author.first_name }} {{ paper.author.last_name }}</small><br>
+            <small>Submission Date: {{ paper.submit_date.strftime('%Y-%m-%d') }}</small><br>
+            <div class="actions">
+                <a href="{{ url_for('download_paper', paper_id=paper.id) }}">Download</a>
+            </div>
+            <!-- Go to Reviewing Page Button -->
+            <div class="go-to-reviewing-page">
+                <a href="{{ url_for('reviewing_page', paper_id=paper.id) }}">
+                    <button>Go to Reviewing Page</button>
+                </a>
+            </div>
+        </li>
+        {% else %}
+        <p>No assigned papers found.</p>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+
+
+
+
+

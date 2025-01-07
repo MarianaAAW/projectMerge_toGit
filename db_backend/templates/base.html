@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Dashboard{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <header style="background-color: #333; padding: 10px 20px;">
+        <nav>
+            <ul style="list-style: none; display: flex; gap: 15px; color: white; margin: 0; padding: 0;">
+                <li><a href="{{ url_for('dashboard') }}" style="color: white; text-decoration: none;">Dashboard</a></li>
+                <li><a href="{{ url_for('paper_status') }}" style="color: white; text-decoration: none;">Paper Status</a></li>
+                <li><a href="{{ url_for('review_status') }}" style="color: white; text-decoration: none;">Review Status</a></li>
+                <li><a href="{{ url_for('logout') }}" style="color: white; text-decoration: none;">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main style="margin: 20px;">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Chatbot Widget -->
+    <div id="chatbot" style="position: fixed; bottom: 20px; right: 20px; width: 300px; background-color: #f9f9f9; border: 1px solid #ccc; border-radius: 8px; padding: 10px;">
+        <h4>Chatbot</h4>
+        <div id="chat-log" style="height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 5px; margin-bottom: 10px;"></div>
+        <input type="text" id="userInput" placeholder="Type your question..." style="width: calc(100% - 60px);">
+        <button onclick="sendMessage()" style="width: 50px;">Send</button>
+    </div>
+
+    <script>
+        function sendMessage() {
+            const message = document.getElementById("userInput").value;
+            if (!message) return;
+
+            // Append user message to the chat log
+            const chatLog = document.getElementById("chat-log");
+            chatLog.innerHTML += `<p><b>You:</b> ${message}</p>`;
+
+            // Send the message to the backend
+            fetch('/chatbot', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Append the bot's response to the chat log
+                chatLog.innerHTML += `<p><b>Bot:</b> ${data.response}</p>`;
+                document.getElementById("userInput").value = ''; // Clear the input field
+                chatLog.scrollTop = chatLog.scrollHeight; // Scroll to the bottom
+            });
+        }
+    </script>
+</body>
+</html>
