@@ -1,3 +1,4 @@
+<!-- filepath: /c:/Users/ismai/OneDrive/Desktop/Soft_Proj_1.0-main/SOFT_PROJ_1.0/db_backend/templates/my_profile.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,9 +19,9 @@
     <p>Track your submitted paper's progress here. <a href="{{ url_for('researchers_dashboard') }}">Writer's Dashboard</a></p>
     {% endif %}
 
-    <!-- Show My Progress only for researchers/reviewers -->
-    {% if user.role in ['reviewer'] %}
-    <p>Track your submitted paper's progress here. <a href="{{ url_for('researchers_dashboard') }}">Reviewer's Dashboard</a></p>
+    <!-- Show Reviewer's Dashboard only for reviewers -->
+    {% if user.role == 'reviewer' %}
+    <p>Access your reviewer's dashboard here. <a href="{{ url_for('reviewers_dashboard') }}">Reviewer's Dashboard</a></p>
     {% endif %}
 
     <!-- Common options for all users -->

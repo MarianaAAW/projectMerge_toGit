@@ -273,6 +273,18 @@ def researchers_dashboard():
 
     return render_template('researchers_dashboard.html', papers=papers)
 
+@app.route('/reviewers_dashboard', methods=['GET'])
+@login_required
+def reviewers_dashboard():
+    # Assuming you have a way to get the logged-in user's ID (e.g., from the session)
+    user_id = current_user.id
+
+    # Fetch all papers assigned to the reviewer
+    papers = Paper.query.filter_by(reviewer_id=user_id).all()
+
+    return render_template('reviewers_dashboard.html', papers=papers)
+
+
 @app.route('/researchers_view_paper/<int:paper_id>', methods=['GET'])
 @login_required
 def researchers_view_paper(paper_id):
