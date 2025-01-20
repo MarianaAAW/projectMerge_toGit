@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Check Reviews{% endblock %}
+
+{% block content %}
+<h2>Research Paper & Reviews Received</h2>
+
+<!-- Display Paper Title and Content -->
+<div id="paper-content">
+    <h3>Paper Title: {{ paper.title }}</h3>
+    <p>{{ paper.content }}</p> <!-- Display the full paper content -->
+</div>
+<hr>
+
+<!-- Display Reviews -->
+<div id="review-list">
+    <h3>Reviews:</h3>
+    {% for review in reviews %}
+        <div class="review-entry">
+            <!-- Check if the review is from the admin -->
+            {% if review.is_admin_review %}
+                <h3><strong>Admin's Review:</strong></h3>
+            
+            <p><strong>Comments:</strong> {{ review.review_text }}</p>
+            <p><strong>Date:</strong> {{ review.review_date.strftime('%Y-%m-%d') }}</p>
+        </div>
+        <hr>
+    {% endfor %}
+</div>
+
+{% endblock %}
+
+

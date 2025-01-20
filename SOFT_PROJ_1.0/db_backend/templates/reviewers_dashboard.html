@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviewer Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .paper-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .paper-item {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f9f9f9;
+        }
+
+        .paper-item h2 {
+            margin: 0 0 10px;
+        }
+
+        .paper-item p {
+            margin: 5px 0;
+        }
+
+        .paper-item .theme {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .go-to-reviewing-page button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .go-to-reviewing-page button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Welcome to the Reviewer's Dashboard</h1>
+        
+    <!-- Filter Form -->
+    <form method="GET" action="{{ url_for('admins_dashboard') }}">
+        <label for="author_name">Author Name:</label>
+        <input type="text" id="author_name" name="author_name" value="{{ request.args.get('author_name') }}">
+
+        <label for="article_name">Article Name:</label>
+        <input type="text" id="article_name" name="article_name" value="{{ request.args.get('article_name') }}">
+
+        <label for="search">Search:</label>
+        <input type="text" id="search" name="search" placeholder="Search by title or keyword" value="{{ request.args.get('search', '') }}">
+
+        <label for="theme">Theme:</label>
+        <select id="theme" name="theme">
+            <option value="">All</option>
+            <option value="social" {% if request.args.get('theme') == 'social' %}selected{% endif %}>Social</option>
+            <option value="natural" {% if request.args.get('theme') == 'natural' %}selected{% endif %}>Natural</option>
+            <option value="formal_science" {% if request.args.get('theme') == 'formal_science' %}selected{% endif %}>Formal Science</option>
+        </select>
+
+        <label for="status">Status:</label>
+        <select id="status" name="status">
+            <option value="">All</option>
+            <option value="needs_reviewer" {% if request.args.get('status') == 'needs_reviewer' %}selected{% endif %}>Needs Reviewer</option>
+            <option value="under_review" {% if request.args.get('status') == 'under_review' %}selected{% endif %}>Under Review</option>
+            <option value="needs_revision" {% if request.args.get('status') == 'needs_revision' %}selected{% endif %}>Needs Revision</option>
+            <option value="being_resubmitted" {% if request.args.get('status') == 'being_resubmitted' %}selected{% endif %}>Being Resubmitted</option>
+            <option value="rejected" {% if request.args.get('status') == 'rejected' %}selected{% endif %}>Rejected</option>
+            <option value="approved" {% if request.args.get('status') == 'approved' %}selected{% endif %}>Approved</option>
+            <option value="published" {% if request.args.get('status') == 'published' %}selected{% endif %}>Published</option>
+        </select>
+
+        <label for="sort_by_date">Sort by Date:</label>
+        <select id="sort_by_date" name="sort_by_date">
+            <option value="latest" {% if request.args.get('sort_by_date') == 'latest' %}selected{% endif %}>Latest</option>
+            <option value="oldest" {% if request.args.get('sort_by_date') == 'oldest' %}selected{% endif %}>Oldest</option>
+        </select>
+
+        <button type="submit">Filter</button>
+    </form>
+
+        <h2>Assigned Papers</h2>
+        <ul class="paper-list">
+            {% for paper in assigned_papers %}
+            <li class="paper-item">
+                <h2>Title: {{ paper.title }}</h2>
+                <p>Author: {{ paper.author }}</p>
+                <p>Description: {{ paper.description }}</p>
+                <p class="submission-date">Submission Date: {{ paper.submission_date }}</p>
+                <p class="theme">Theme: {{ paper.theme }}</p>
+                <p>Status: {{ paper.status }}</p>
+                <!-- Go to Reviewing Page Button -->
+                <div class="go-to-reviewing-page">
+                    <a href="{{ url_for('reviewing_page', paper_id=paper.id) }}">
+                        <button>Review a Paper</button>
+                    </a>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
