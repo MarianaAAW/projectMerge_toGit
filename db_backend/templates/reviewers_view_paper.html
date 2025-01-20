@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paper Progress</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .article-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .article-details {
+            flex-grow: 1;
+        }
+        .article-title {
+            font-size: 1.5em;
+            margin: 0;
+        }
+        .status-button {
+            padding: 5px 10px;
+            background-color: #17a2b8;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .status-button:hover {
+            background-color: #138496;
+        }
+        .resubmit-link {
+            color: #dc3545;
+            text-decoration: none;
+        }
+        .resubmit-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>View Assignned Paper</h2>
+
+        <!-- Article Details -->
+        <div class="article-header">
+            <div class="article-icon"></div>
+            <div class="article-details">
+                <h1 class="article-title">{{ paper.title }}</h1>
+                <p>{{ paper.author.firstname }} {{ paper.author.lastname }}</p>
+                <p>{{ paper.submission_date }}</p>
+                <p>{{ paper.description }}</p>
+                <p>{{ paper.theme }}</p>
+                <p>{{ paper.status }}</p>
+            </div>
+        </div>
+
+        {% if current_user.role == 'reviewer' %}
+        <!-- Reviewr's Table for all assigned Papers -->
+        <h3 class="mt-4">Paper Progress</h3>
+        <table class="table table-bordered table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Author</th>
+                    <th>Status</th>
+                    <th>Reviews</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for paper in papers %}
+                <tr>
+                    <td>{{ paper.author.first_name }} {{ paper.author.last_name }}</td>
+                    <td>{{ paper.status }}</td>
+                    <td>
+                        {% if paper.status == 'under_review' %}
+                            {% if paper.reviews|length > 0 %}
+                                Reviews Received
+                            {% else %}
+                                Pending Reviews
+                            {% endif %}
+                        {% else %}
+                            {{ paper.status }}
+                        {% endif %}
+                    </td>
+            </tbody>
+        </table>
+        {% else %}
+        <p>You do not have access to this page.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

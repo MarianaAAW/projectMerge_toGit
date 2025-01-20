@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Check Reviews{% endblock %}
+
+{% block content %}
+<h2>Research Paper & Reviews Received</h2>
+
+<!-- Display Paper Title and Content -->
+<div id="paper-content">
+    <h3>Paper Title: {{ paper.title }}</h3>
+    <p>{{ paper.content }}</p> <!-- Display the full paper content -->
+</div>
+
+<!-- Reviewer Comment Section -->
+<h3>Reviewer's Review</h3>
+<form method="POST" action="{{ url_for('admin_add_comment', paper_id=paper.id) }}">
+    <textarea name="Reviewer's_review" placeholder="Write your review here..." required></textarea>
+    <button type="submit">Submit Review</button>
+</form>
+{% endblock %}
+
+

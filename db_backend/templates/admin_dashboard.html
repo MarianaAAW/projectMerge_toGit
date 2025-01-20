@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+        }
+
+        .dashboard-container {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+
+        .section {
+            margin: 10px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .section h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .section .search-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .section .search-container input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .section .search-container button {
+            margin-left: 10px;
+            padding: 8px 12px;
+            background-color: #8a8ae6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .item img {
+            width: 40px;
+            height: 40px;
+            background-color: #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        .item .description {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .item .time {
+            font-size: 12px;
+            color: gray;
+        }
+
+        .item .action {
+            font-size: 16px;
+            cursor: pointer;
+            color: #8a8ae6;
+            margin-left: 10px;
+        }
+
+        .metrics, .charts {
+            flex: 1;
+            margin-left: 20px;
+        }
+
+        .charts canvas {
+            max-width: 100%;
+            margin-top: 20px;
+        }
+
+        .metrics {
+            text-align: center;
+            background: #eef3f7;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .metrics h3 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .metrics span {
+            font-size: 24px;
+            color: #8a8ae6;
+        }
+    </style>
+</head>
+<body>
+    <header style="padding: 10px 20px; background-color: #fff; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+        <h1>Admin's Dashboard</h1>
+    </header>
+    <div class="dashboard-container">
+        <!-- All Papers Section -->
+        <div class="section" style="flex: 2;">
+            <h2>All Papers</h2>
+            <div class="search-container">
+                <input type="text" placeholder="Search for papers">
+                <button>🔍</button>
+            </div>
+            <!-- Paper Items -->
+            <div class="item">
+                
+                <div class="description">
+                    <p> Research Paper Title </p>
+                    <span class="time">Today - 23 min</span>
+                </div>
+                <div class="action">▶</div>
+            </div>
+            <div class="item">
+                
+                <div class="description">
+                    <p>Research Paper Title</p>
+                    <span class="time">Today - 23 min</span>
+                </div>
+                <div class="action">▶</div>
+            </div>
+        </div>
+
+        <!-- Metrics & Charts -->
+        <div class="metrics">
+            <h3>Total Number of Users</h3>
+            <span>867,926</span>
+        </div>
+        <div class="charts">
+            <canvas id="pieChart"></canvas>
+            <canvas id="barChart"></canvas>
+        </div>
+
+        <!-- All Users Section -->
+        <div class="section" style="flex: 2;">
+            <h2>All Users</h2>
+            <div class="search-container">
+                <input type="text" placeholder="Search for users">
+                <button>🔍</button>
+            </div>
+            <!-- User Items -->
+            <div class="item">
+                
+                <div class="description">
+                    <p>User details</p>
+                    <span class="time">Today - 23 min</span>
+                </div>
+                <div class="action">▶</div>
+            </div>
+            <div class="item">
+              
+                <div class="description">
+                    <p>User details</p>
+                    <span class="time">Today - 23 min</span>
+                </div>
+                <div class="action">▶</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart.js Script -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Pie Chart
+        const ctxPie = document.getElementById('pieChart').getContext('2d');
+        new Chart(ctxPie, {
+            type: 'pie',
+            data: {
+                labels: ['Approved', 'Rejected', 'Published', 'Submitted','Under Review', 'Needs Reviewer', 'Needs Revision', 'Being Resubmitted'],
+                datasets: [{
+                    data: [13, 13 ,13 ,13 , 13, 13, 13, 13 ],
+                    backgroundColor: ['#542344', '#001242', '#2CEAA3', '#005E7C','#040F16','#05B2DC','#62BBC1','#98A6D4']
+                }]
+            }
+        });
+
+        // Bar Chart
+        const ctxBar = document.getElementById('barChart').getContext('2d');
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ['Natural Science', 'Social Science', 'Formal Science'],
+                datasets: [{
+                    label: 'No. of Papers Published',
+                    data: [10, 50, 30],
+                    backgroundColor: '#4e79a7'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
