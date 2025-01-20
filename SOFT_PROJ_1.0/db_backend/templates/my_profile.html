@@ -8,6 +8,7 @@
 </head>
 <body>
     <h1>Welcome to your profile {{ user.first_name }}</h1>
+    <p>Your role: {{ user.role }}</p> <!-- Debug statement to check the user's role -->
     
     <!-- Show admin dashboard only for admins -->
     {% if user.role == 'admin' %}
