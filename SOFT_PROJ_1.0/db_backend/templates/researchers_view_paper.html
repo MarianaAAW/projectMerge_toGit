@@ -1,9 +1,10 @@
+<!-- filepath: /c:/Users/ismai/OneDrive/Desktop/Soft_Proj_1.0-main/SOFT_PROJ_1.0/db_backend/templates/researchers_view_paper.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paper Progress</title>
+    <title>View Paper</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
@@ -37,19 +38,18 @@
             padding: 5px 10px;
             background-color: #17a2b8;
             color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
         }
         .status-button:hover {
             background-color: #138496;
         }
         .resubmit-link {
-            color: #dc3545;
+            padding: 5px 10px;
+            background-color: #ffc107;
+            color: white;
             text-decoration: none;
         }
         .resubmit-link:hover {
-            text-decoration: underline;
+            background-color: #e0a800;
         }
     </style>
 </head>
@@ -59,56 +59,41 @@
 
         <!-- Article Details -->
         <div class="article-header">
-            <div class="article-icon"></div>
             <div class="article-details">
                 <h1 class="article-title">{{ paper.title }}</h1>
-                <p>{{ paper.author.firstname }} {{ paper.author.lastname }}</p>
-                <p>{{ paper.submission_date }}</p>
-                <p>{{ paper.description }}</p>
-                <p>{{ paper.theme }}</p>
-                <p>{{ paper.status }}</p>
+                <p><strong>Author:</strong> {{ paper.author.first_name }} {{ paper.author.last_name }}</p>
+                <p><strong>Submission Date:</strong> {{ paper.submission_date.strftime('%Y-%m-%d') }}</p>
+                <p><strong>Theme:</strong> {{ paper.theme }}</p>
+                <p><strong>Description:</strong> {{ paper.description }}</p>
+                <p><strong>Status:</strong> {{ paper.status }}</p>
+                {% if paper.status == 'published' %}
+                <p><strong>Publish Date:</strong> {{ paper.publish_date.strftime('%Y-%m-%d') }}</p>
+                {% endif %}
             </div>
         </div>
 
-        {% if current_user.role == 'reseracher' %}
+        {% if current_user.role == 'researcher' %}
         <!-- Researcher's Table for All Submitted Papers -->
         <h3 class="mt-4">Paper Progress</h3>
         <table class="table table-bordered table-striped">
-            <thead class="thead-dark">
+            <thead>
                 <tr>
-                    <th>Reviewers Assigned</th>
+                    <th>Title</th>
+                    <th>Submission Date</th>
                     <th>Status</th>
-                    <th>Reviews</th>
                 </tr>
             </thead>
             <tbody>
                 {% for paper in papers %}
                 <tr>
-                    <td>
-                        {% if paper.reviewers %}
-                            {% for reviewer in paper.reviewers %}
-                                {{ reviewer.first_name }} {{ reviewer.last_name }}{% if not loop.last %}, {% endif %}
-                            {% endfor %}
-                        {% else %}
-                            No reviewers assigned
-                        {% endif %}
-                    </td>
+                    <td>{{ paper.title }}</td>
+                    <td>{{ paper.submission_date.strftime('%Y-%m-%d') }}</td>
                     <td>{{ paper.status }}</td>
-                    <td>
-                        {% if paper.status == 'under_review' %}
-                            {% if paper.reviews|length > 0 %}
-                                Reviews Received
-                            {% else %}
-                                Pending Reviews
-                            {% endif %}
-                        {% else %}
-                            {{ paper.status }}
-                        {% endif %}
-                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+        {% endif %}
     </div>
 </body>
 </html>
