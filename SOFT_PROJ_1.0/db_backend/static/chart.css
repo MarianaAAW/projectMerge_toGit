@@ -1,0 +1,163 @@
+        /* Collapsible Section Styles */
+        .collapsible {
+            cursor: pointer;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .collapsible .arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .collapsible.active .arrow {
+            transform: rotate(180deg);
+        }
+
+        .content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            padding: 0 15px;
+        }
+
+        .collapsible.active + .content {
+            max-height: 500px; /* Adjust as needed */
+            padding: 10px 15px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul li {
+            margin: 10px 0;
+        }
+
+        /* Box Style for Papers and Users */
+        .box {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .box h3 {
+            margin-top: 0;
+        }
+
+        .view-link {
+            display: inline-block;
+            margin-top: 10px;
+            color: #007BFF;
+            text-decoration: none;
+        }
+
+        .view-link:hover {
+            text-decoration: underline;
+        }
+
+        h3 {
+         text-align: center;
+         color: black;
+         font-size: xx-large;
+         font-family: 'Times New Roman', Times, serif;
+        }
+
+        .pie-chart {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: conic-gradient(
+            #FF6F61 0% 12.5%,  /* Approved */
+            #6B5B95 12.5% 25%, /* Rejected */
+            #88B04B 25% 37.5%, /* Published */
+            #F7CAC9 37.5% 50%, /* Submitted */
+            #92A8D1 50% 62.5%, /* Under Review */
+            #FFCC5C 62.5% 75%, /* Needs Review*/
+            #D65076 75% 87.5%, /* Needs Revision*/
+            #45B8AC 87.5% 100% /* Being Resubmitted */
+        );
+            margin: 20px auto;
+
+        }
+
+       .pie-chart-container {
+        width: 200px;
+        height: 200px;
+       }
+
+       /* All tags */
+       .labels {
+        margin-top: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        text-align: center;
+      }
+
+     /*Seperate tags*/
+       .label {
+        display: flex;
+        align-items: center;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        font-weight: bold;
+        color: #333;
+        padding: 5px 10px;
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        text-align: center;
+     }
+     
+     /*mini box color thingis for tags*/
+       .label .color-guide {
+         width: 15px;
+         height: 15px;
+         margin-right: 8px;
+         border-radius: 3px;
+    }
+
+    /*color palette for box color thingis*/
+      .label-1 .color-guide { background: #FF6F61; }
+      .label-2 .color-guide { background: #6B5B95; }
+      .label-3 .color-guide { background: #88B04B; }
+      .label-4 .color-guide { background: #F7CAC9; }
+      .label-5 .color-guide { background: #92A8D1; }
+      .label-6 .color-guide { background: #FFCC5C }
+      .label-7 .color-guide { background: #D65076; }
+      .label-8 .color-guide { background: #45B8AC; }
+
+      /*all charts positioning*/
+      .flex-container {
+            display: flex;  
+            justify-content: space-between;
+            gap: 20px; 
+            padding: 30px;
+      } 
+      
+      /* bar graph */
+
+    
+
+   .total-number-of-users {
+    padding: 300px 50px; 
+    display: flex;
+    text-align: flex-start; 
+    justify-content: center;
+    width: 100%;
+    background-color: #f0f0f0;
+   }
+   
+  

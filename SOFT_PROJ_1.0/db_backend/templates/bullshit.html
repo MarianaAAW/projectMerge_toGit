@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horizontal Bar Chart</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f9f9f9;
+        }
+
+        .chart-container {
+            text-align: center;
+            width: 600px;
+        }
+
+        /* Chart Title */
+        .chart-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        
+
+        .legend-label {
+            font-size: 14px;
+        }
+
+        /* Bar Chart */
+        .chart {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .bar-container {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .label {
+            font-size: 14px;
+            font-weight: bold;
+            margin-right: 10px;
+            width: 120px; /* Adjust to align labels */
+            text-align: right;
+        }
+
+        .bar {
+            height: 30px;
+            border-radius: 5px;
+            background-color: #00c8ff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .bar:nth-child(1) {
+            width: 20%; /* Corresponding to 10 */
+        }
+
+        .bar:nth-child(2) {
+            width: 90%; /* Corresponding to 45 */
+        }
+
+        .bar:nth-child(3) {
+            width: 60%; /* Corresponding to 30 */
+        }
+
+        /* X-axis Label */
+        .x-axis-label {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="chart-container">
+        <!-- Chart Title -->
+        <div class="chart-title">No. of Papers Published</div>
+
+        <!-- Legend -->
+        <div class="legend">
+            <div class="legend-box"></div>
+            
+        </div>
+
+        <!-- Chart -->
+        <div class="chart">
+            <div class="bar-container">
+                <div class="label">Natural Science</div>
+                <div class="bar" style="width: 20%;"></div>
+            </div>
+            <div class="bar-container">
+                <div class="label">Social Science</div>
+                <div class="bar" style="width: 90%;"></div>
+            </div>
+            <div class="bar-container">
+                <div class="label">Formal Science</div>
+                <div class="bar" style="width: 60%;"></div>
+            </div>
+        </div>
+
+        <!-- X-axis Label -->
+        <div class="x-axis-label">No. of papers published</div>
+    </div>
+</body>
+</html>

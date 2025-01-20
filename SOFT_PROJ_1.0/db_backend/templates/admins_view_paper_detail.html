@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paper Details</title>
+</head>
+<body>
+    <h1>{{ paper.title }}</h1>
+    <p>Author: {{ paper.author.firstname }} {{ paper.author.lastname }}</p>
+    <p>Status: {{ paper.status }}</p>
+
+    <h3>Reviewers Assigned:</h3>
+    {% if reviewers %}
+        <ul>
+        {% for reviewer in reviewers %}
+            <li>{{ reviewer.first_name }} {{ reviewer.last_name }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No reviewers assigned yet.</p>
+    {% endif %}
+</body>
+</html>
