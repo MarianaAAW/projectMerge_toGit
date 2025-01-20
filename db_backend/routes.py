@@ -363,7 +363,8 @@ def admins_view_paper_detail(paper_id):
     # Fetch the paper details from the database using the paper_id
     paper = Paper.query.filter_by(id=paper_id).first()
     print("paper : ",paper,"-------------------------------------------------------",type(paper))
-    print("paper : ",paper.id,"-------------------------------------------------------",type(paper))
+    print("paper : ",paper.id,"--------------------s-----------------------------------",type(paper))
+    print("paper description :", type(paper.description))
 
 
     # If the paper doesn't exist, return a 404 error
@@ -441,7 +442,7 @@ def submit_paper():
         # Extract form fields
         title = request.form.get('title')
         theme = request.form.get('theme')
-        description = request.form.get('description', '')  # Default to an empty string if not provided
+        description = request.form.get('Description')  # Default to an empty string if not provided
         content = request.form.get('content')  # Content from CKEditor
 
         # Validate mandatory fields
