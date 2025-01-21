@@ -286,7 +286,7 @@ def admins_dashboard():
 
     # Build the query for fetching papers
     paper_query = Paper.query
-
+    
     # Ensure that admins can see all papers, not just filtered by status
     if article_name:
         paper_query = paper_query.filter(Paper.title.contains(article_name))
