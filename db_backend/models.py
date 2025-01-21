@@ -40,7 +40,7 @@ class Paper(db.Model):
     pdf_filename = db.Column(db.String(255), nullable=True)  # Optional
     reviewers = db.relationship('User', backref='paper', lazy=True)
     old_version_id = db.Column(db.Integer, db.ForeignKey('paper.id'), nullable=True)  # Link to the old version
-    description = db.Column(db.String(500), nullable=True)  # New column for short description
+    description = db.Column(db.String(500), nullable=False)  # New column for short description
 
     # Relationship to track old version
     old_version = db.relationship('Paper', remote_side=[id], backref='resubmitted_paper')
