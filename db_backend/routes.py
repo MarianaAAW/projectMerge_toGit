@@ -277,58 +277,37 @@ def researchers_dashboard():
 @app.route('/admins_dashboard', methods=['GET'])
 def admins_dashboard():
     # Get filters for papers from the request arguments
-    author_name = request.args.get('author_name')
+    #author_name = request.args.get('author_name')
     article_name = request.args.get('article_name')
     theme = request.args.get('theme')
     status = request.args.get('status')
     search_query = request.args.get('search')
     sort_by_date = request.args.get('sort_by_date', 'latest')
-
+    
     # Build the query for fetching papers
     paper_query = Paper.query
-    
-    # Ensure that admins can see all papers, not just filtered by status
-    if article_name:
-        paper_query = paper_query.filter(Paper.title.contains(article_name))
-    if search_query:
-        paper_query = paper_query.filter(Paper.title.contains(search_query) | Paper.content.contains(search_query))
+
     if theme:
-        paper_query = paper_query.filter(Paper.theme == theme)
-    if status:
-        paper_query = paper_query.filter(Paper.status == status)  # Filter by status, only if provided
-    if sort_by_date == 'latest':
-        paper_query = paper_query.order_by(Paper.submission_date.desc())
-    elif sort_by_date == 'oldest':
-        paper_query = paper_query.order_by(Paper.submission_date.asc())
+        user_query = User.query
+        users = user_query.all()
+        if theme == "Natural Science":
+            first_1 = Paper.query.filter(Paper.theme == "Natural Science").all()
+            return render_template('admins_dashboard.html', papers=first_1, users=users)
+        elif theme == "social":
+            second_2 = Paper.query.filter(Paper.theme == "Social Science").all()
+            return render_template('admins_dashboard.html', papers=second_2, users=users)
+        else:
+            third_3 = Paper.query.filter(Paper.theme == "Formal Science").all()
+            return render_template('admins_dashboard.html', papers=third_3, users=users)
     
     papers = paper_query.all()
-
-    # Get user filters (for users)
-    user_name = request.args.get('name')
-    approved_papers = request.args.get('approved_papers')
-    assigned_papers = request.args.get('assigned_papers')
-    preferences = request.args.getlist('preferences')
-
+    
     # Build the query for fetching users
     user_query = User.query
-    if user_name:
-        user_query = user_query.filter(User.first_name.contains(user_name) | User.last_name.contains(user_name))
-    if approved_papers:
-        if approved_papers == 'most':
-            user_query = user_query.order_by(User.approved_papers.desc())
-        elif approved_papers == 'least':
-            user_query = user_query.order_by(User.approved_papers.asc())
-    if assigned_papers:
-        if assigned_papers == 'most':
-            user_query = user_query.order_by(User.assigned_papers.desc())
-        elif assigned_papers == 'least':
-            user_query = user_query.order_by(User.assigned_papers.asc())
-    if preferences:
-        user_query = user_query.filter(User.preferences.any(preferences.in_(preferences)))
-
     users = user_query.all()
 
     return render_template('admins_dashboard.html', papers=papers, users=users)
+
 
 
 @app.route('/admins_view_user_details', methods=['GET'])
