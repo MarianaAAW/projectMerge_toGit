@@ -8,18 +8,17 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h2>View Submitted Paper</h2>
-
         <!-- Article Details -->
         <div class="article-header">
             <div class="article-icon"></div>
             <div class="article-details">
-                <h1 class="article-title">{{ paper.title }}</h1>
-                <p>{{ paper.author.firstname }} {{ paper.author.lastname }}</p>
-                <p>{{ paper.submission_date }}</p>
-                <p>{{ paper.description }}</p>
-                <p>{{ paper.theme }}</p>
-                <p>{{ paper.status }}</p>
+                <h1 class="article-title">Paper Details</h1>
+                <p>Paper Title: {{ paper.title}} </p>
+                <p>Author Name: {{ paper.author.first_name}}  {{ paper.author.last_name }}</p>
+                <p>Submission Date: {{ paper.submission_date }}</p>
+                <p>Description: {{ paper.description }}</p>
+                <p>Theme: {{ paper.theme }}</p>
+                <p>Status: {{ paper.status }}</p>
             </div>
         </div>
 
@@ -28,17 +27,14 @@
         <table class="table table-bordered table-striped">
             <thead class="thead-dark">
                 <tr>
-                    <th>Author</th>
                     <th>Reviewers Assigned</th>
                     <th>Status</th>
-                    <th>Reviews</th>
                     <th>Actions</th>
                     <th>Update Status</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>{{ paper.author.first_name }} {{ paper.author.last_name }}</td>
                     <td>
                         {% if reviewers %}
                             {% for reviewer in reviewers %}
@@ -50,18 +46,7 @@
                     </td>
                     <td>{{ paper.status }}</td>
                     <td>
-                        {% if paper.status == 'under_review' %}
-                            {% if paper.reviews|length > 0 %}
-                                Reviews Received
-                            {% else %}
-                                Pending Reviews
-                            {% endif %}
-                        {% else %}
-                            {{ paper.status }}
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if paper.status == 'needs_reviewer' %}
+                        {% if paper.status == 'needs reviewer' %}
                             <a href="{{ url_for('assign_reviewer', paper_id=paper.id) }}" class="btn btn-primary btn-sm">Assign Reviewer</a>
                         {% elif paper.status == 'approved' %}
                             <form action="{{ url_for('publish_paper', paper_id=paper.id) }}" method="post" class="d-inline">

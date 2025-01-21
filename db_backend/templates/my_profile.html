@@ -18,11 +18,6 @@
     <p>Track your submitted paper's progress here. <a href="{{ url_for('researchers_dashboard') }}">Writer's Dashboard</a></p>
     {% endif %}
 
-    <!-- Show My Progress only for researchers/reviewers -->
-    {% if user.role in ['reviewer'] %}
-    <p>Track your submitted paper's progress here. <a href="{{ url_for('researchers_dashboard') }}">Reviewer's Dashboard</a></p>
-    {% endif %}
-
     <!-- Common options for all users -->
     <p>Submit a paper here. <a href="{{ url_for('submit_paper') }}">Submit a paper</a></p>
     <a href="/logout">Logout</a>

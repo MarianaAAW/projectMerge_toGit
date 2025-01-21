@@ -98,6 +98,23 @@
         <span class="arrow">▼</span>
     </div>
     <div class="content">
+        <!-- Filter Form -->
+        <form method="GET" action="{{ url_for('admins_dashboard') }}">
+            <label for="theme">Theme:</label>
+            <select id="theme" name="theme">
+                <option value="">All</option>
+                <option value="Social Science" {% if request.args.get('theme')=='Social_Science' %} selected {% endif
+                    %}>Social Science</option>
+                <option value="Natural Science" {% if request.args.get('theme')=='Natural_Science' %} selected {% endif
+                    %}>
+                    Natural Science
+                </option>
+                <option value="formal_science" {% if request.args.get('theme')=='Formal_Science' %} selected {% endif
+                    %}>Formal Science</option>
+            </select>
+
+            <button type="submit">Filter</button>
+        </form>
 
         <!-- List of Papers -->
         <div class="display">
@@ -128,7 +145,7 @@
         <span class="arrow">▼</span>
     </div>
     <div class="content">
-        
+
         <!-- List of Users -->
         <div class="display">
             {% for user in users %}

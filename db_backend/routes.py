@@ -254,14 +254,26 @@ def researchers_view_paper(paper_id):
 
 @app.route('/admins_dashboard', methods=['GET'])
 def admins_dashboard():
-   
+    # Get filters for papers from the request arguments
+    theme = request.args.get('theme')
+    # Build the query for fetching papers
     paper_query = Paper.query
-    papers = paper_query.all()
-    # Build the query for fetching users
     user_query = User.query
     users = user_query.all()
-
+    
+    if theme:
+        if theme == "Natural Science":
+            first_1 = Paper.query.filter(Paper.theme == "Natural Science").all()
+            return render_template('admins_dashboard.html', papers=first_1, users=users)
+        elif theme == "Social Science":
+            second_2 = Paper.query.filter(Paper.theme == "Social Science").all()
+            return render_template('admins_dashboard.html', papers=second_2, users=users)
+        else:
+            third_3 = Paper.query.filter(Paper.theme == "Formal Science").all()
+            return render_template('admins_dashboard.html', papers=third_3, users=users)
+    papers = paper_query.all()
     return render_template('admins_dashboard.html', papers=papers, users=users)
+
 
 @app.route('/admins_view_user_details', methods=['GET'])
 def admins_view_user_details():
@@ -365,6 +377,27 @@ def admins_final_review(paper_id):
         return redirect(url_for('admins_final_review', paper_id=paper_id))  # Redirect to the editable review page
 
     return render_template('admins_final_review.html', paper=paper, reviews=reviews, admin_review=admin_review)
+
+@app.route('/assign_reviewer', methods=['GET'])
+def assign_reviewer():
+    # Fetch all users except the admin
+    users = User.query.filter(User.role != 'admin').all()
+    return render_template('assign_reviewer.html', users=users)
+
+@app.route('/make_reviewer', methods=['POST'])
+def make_reviewer():
+    user_id = request.form.get('user_id')
+    if user_id:
+        user = User.query.get(user_id)
+        if user:
+            user.role = 'reviewer'
+            db.session.commit()
+            flash(f"{user.first_name} {user.last_name} is now a reviewer.", "success")
+        else:
+            flash("User not found.", "error")
+    else:
+        flash("Invalid user ID.", "error")
+    return redirect(url_for('assign_reviewer'))
 
 @app.route('/submit_paper', methods=['GET', 'POST']) 
 @login_required
