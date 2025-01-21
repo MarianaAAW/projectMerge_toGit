@@ -277,35 +277,23 @@ def researchers_dashboard():
 @app.route('/admins_dashboard', methods=['GET'])
 def admins_dashboard():
     # Get filters for papers from the request arguments
-    #author_name = request.args.get('author_name')
-    article_name = request.args.get('article_name')
     theme = request.args.get('theme')
-    status = request.args.get('status')
-    search_query = request.args.get('search')
-    sort_by_date = request.args.get('sort_by_date', 'latest')
-    
     # Build the query for fetching papers
     paper_query = Paper.query
-
+    user_query = User.query
+    users = user_query.all()
+    
     if theme:
-        user_query = User.query
-        users = user_query.all()
         if theme == "Natural Science":
             first_1 = Paper.query.filter(Paper.theme == "Natural Science").all()
             return render_template('admins_dashboard.html', papers=first_1, users=users)
-        elif theme == "social":
+        elif theme == "Social Science":
             second_2 = Paper.query.filter(Paper.theme == "Social Science").all()
             return render_template('admins_dashboard.html', papers=second_2, users=users)
         else:
             third_3 = Paper.query.filter(Paper.theme == "Formal Science").all()
             return render_template('admins_dashboard.html', papers=third_3, users=users)
-    
     papers = paper_query.all()
-    
-    # Build the query for fetching users
-    user_query = User.query
-    users = user_query.all()
-
     return render_template('admins_dashboard.html', papers=papers, users=users)
 
 

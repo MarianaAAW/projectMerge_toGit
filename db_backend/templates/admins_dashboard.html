@@ -100,17 +100,19 @@
     <div class="content">
         <!-- Filter Form -->
         <form method="GET" action="{{ url_for('admins_dashboard') }}">
-
             <label for="theme">Theme:</label>
             <select id="theme" name="theme">
                 <option value="">All</option>
-                <option value="social" {% if request.args.get('theme')=='social' %} selected {% endif %}>Social</option>
-                <option value="Natural Science" {% if request.args.get('theme')=='natural' %} selected {% endif %}>
-                    Natural
+                <option value="Social Science" {% if request.args.get('theme')=='Social_Science' %} selected {% endif
+                    %}>Social Science</option>
+                <option value="Natural Science" {% if request.args.get('theme')=='Natural_Science' %} selected {% endif
+                    %}>
+                    Natural Science
                 </option>
-                <option value="formal_science" {% if request.args.get('theme')=='formal_science' %} selected {% endif
+                <option value="formal_science" {% if request.args.get('theme')=='Formal_Science' %} selected {% endif
                     %}>Formal Science</option>
             </select>
+
             <button type="submit">Filter</button>
         </form>
 
