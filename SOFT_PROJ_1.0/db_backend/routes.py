@@ -291,6 +291,18 @@ def researchers_view_paper(paper_id):
     paper = Paper.query.get_or_404(paper_id)
     return render_template('researchers_view_paper.html', paper=paper)
 
+# filepath: /c:/Users/ismai/OneDrive/Desktop/Soft_Proj_1.0-main/SOFT_PROJ_1.0/db_backend/routes.py
+from flask import send_file
+
+@app.route('/download_pdf/<int:paper_id>', methods=['GET'])
+@login_required
+def download_pdf(paper_id):
+    paper = Paper.query.get_or_404(paper_id)
+    if paper.pdf_path:
+        return send_file(paper.pdf_path, as_attachment=True)
+    flash('PDF not found.', 'error')
+    return redirect(url_for('researchers_view_paper', paper_id=paper.id))
+
 @app.route('/admins_dashboard', methods=['GET'])
 def admins_dashboard():
     # Get filters for papers from the request arguments

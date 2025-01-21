@@ -111,6 +111,7 @@
                     <p><strong>Theme:</strong> {{ paper.theme }}</p>
                     <p><strong>Description:</strong> {{ paper.description }}</p>
                     <p><strong>Submission Date:</strong> {{ paper.submission_date.strftime('%Y-%m-%d') }}</p>
+                    <p><strong>Status:</strong> {{ paper.status }}</p>
                     {% if paper.status == 'published' %}
                     <p><strong>Publish Date:</strong> {{ paper.publish_date.strftime('%Y-%m-%d') }}</p>
                     {% endif %}
