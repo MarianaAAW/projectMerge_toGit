@@ -437,8 +437,6 @@ def make_reviewer():
             # Update the role based on the current role
             if user.role == 'researcher':
                 user.role = 'researcher & reviewer'
-            else:
-                user.role = 'reviewer'
             db.session.commit()
             flash(f"{user.first_name} {user.last_name} is now assigned as a reviewer.", "success")
         else:
