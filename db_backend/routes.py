@@ -252,6 +252,28 @@ def researchers_view_paper(paper_id):
     paper = Paper.query.get_or_404(paper_id)
     return render_template('researchers_view_paper.html', paper=paper)
 
+@app.route('/researchers_check_reviews', methods=['GET'])
+@login_required
+def researchers_check_reviews():
+    # Ensure the user has the role 'researcher' or both 'researcher' and 'reviewer'
+    if current_user.role != 'researcher' and current_user.role != 'researcher & reviewer':
+        flash("Access denied. Only researchers or users with both 'researcher' and 'reviewer' roles can view this page.", "danger")
+        return redirect(url_for('my_home'))
+    
+    # Fetch all reviews for the current user's submitted papers
+    reviews = (
+        db.session.query(Review)
+        .join(Paper, Review.paper_id == Paper.id)
+        .filter(
+            Paper.author_id == current_user.id,  # Only the researcher's papers
+            Review.is_admin_review == True      # Only admin reviews
+        )
+        .all()
+    )
+
+    # Render the template with the reviews
+    return render_template('researchers_check_reviews.html', reviews=reviews)
+
 @app.route('/admins_dashboard', methods=['GET'])
 def admins_dashboard():
     # Get filters for papers from the request arguments
@@ -378,6 +400,7 @@ def admins_final_review(paper_id):
 
     return render_template('admins_final_review.html', paper=paper, reviews=reviews, admin_review=admin_review)
 
+'''
 @app.route('/assign_reviewer', methods=['GET'])
 def assign_reviewer():
     # Fetch all users except the admin
@@ -390,7 +413,7 @@ def make_reviewer():
     if user_id:
         user = User.query.get(user_id)
         if user:
-            user.role = 'reviewer'
+            user.role = 'researcher & reviewer'
             db.session.commit()
             flash(f"{user.first_name} {user.last_name} is now a reviewer.", "success")
         else:
@@ -398,6 +421,41 @@ def make_reviewer():
     else:
         flash("Invalid user ID.", "error")
     return redirect(url_for('assign_reviewer'))
+'''
+@app.route('/assign_reviewer', methods=['GET'])
+def assign_reviewer():
+    # Fetch all users except the admin
+    users = User.query.filter(User.role != 'admin').all()
+    return render_template('assign_reviewer.html', users=users)
+
+@app.route('/make_reviewer', methods=['POST'])
+def make_reviewer():
+    user_id = request.form.get('user_id')
+    if user_id:
+        user = User.query.get(user_id)
+        if user:
+            # Update the role based on the current role
+            if user.role == 'researcher':
+                user.role = 'researcher & reviewer'
+            else:
+                user.role = 'reviewer'
+            db.session.commit()
+            flash(f"{user.first_name} {user.last_name} is now assigned as a reviewer.", "success")
+        else:
+            flash("User not found.", "error")
+    else:
+        flash("Invalid user ID.", "error")
+    return redirect(url_for('assign_reviewer'))
+
+@app.route('/reviewers_dashboard', methods=['GET'])
+def reviewers_dashboard():
+    # Add logic for the reviewer's dashboard here
+    return render_template('reviewers_dashboard.html')
+
+
+
+
+
 
 @app.route('/submit_paper', methods=['GET', 'POST']) 
 @login_required

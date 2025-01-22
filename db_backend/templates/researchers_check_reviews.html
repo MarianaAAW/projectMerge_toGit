@@ -1,0 +1,28 @@
+{% block content %}
+<h2>Admin's Review</h2>
+
+<!-- Display Admin Reviews -->
+<div id="review-list">
+    {% for review in reviews %}
+        <div class="review-entry">
+            <p><strong>Date:</strong> {{ review.review_date.strftime('%Y-%m-%d') }}</p>
+            <p><strong>Review Text:</strong> {{ review.review_text }}</p>
+        </div>
+    {% endfor %}
+</div>
+
+<style>
+    .review-entry {
+        padding: 20px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+
+    h3 {
+        font-size: 18px;
+        color: #444;
+    }
+</style>
+{% endblock %}

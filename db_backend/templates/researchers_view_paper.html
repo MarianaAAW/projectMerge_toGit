@@ -1,4 +1,3 @@
-<!-- filepath: /c:/Users/ismai/OneDrive/Desktop/Soft_Proj_1.0-main/SOFT_PROJ_1.0/db_backend/templates/researchers_view_paper.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,22 +11,43 @@
             margin: 20px;
         }
 
-        h1 {
-            text-align: center;
-        }
-
         .paper-content {
             margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            height: 80vh; /* Adjust the height as needed */
+            width: 100%; /* Adjust the width as needed */
+            overflow: auto; /* Add scroll if content overflows */
+        }
+
+        .paper-title {
+            text-align: center;
+            font-size: 24px;
+            margin: 0;
+            padding: 10px 0;
+            border-bottom: 1px solid #ccc;
+            background-color: #f1f1f1;
+        }
+
+        .top-right-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
         }
     </style>
 </head>
 <body>
-    <h1>{{ paper.title }}</h1>
+    <a href="{{ url_for('researchers_check_reviews', paper_id=paper.id) }}" class="top-right-button">
+        <button>Check Reviews</button>
+    </a>
     <p><strong>Author:</strong> {{ paper.author.first_name }} {{ paper.author.last_name }}</p>
     <p><strong>Submission Date:</strong> {{ paper.submission_date.strftime('%Y-%m-%d') }}</p>
     <p><strong>Theme:</strong> {{ paper.theme }}</p>
     <p><strong>Description:</strong> {{ paper.description }}</p>
     <div class="paper-content">
+        <h1 class="paper-title">Title: {{ paper.title }}</h1>
         {% if paper.pdf_path %}
         <a href="{{ url_for('download_pdf', paper_id=paper.id) }}">Download PDF</a>
         {% else %}
@@ -36,3 +56,4 @@
     </div>
 </body>
 </html>
+ 

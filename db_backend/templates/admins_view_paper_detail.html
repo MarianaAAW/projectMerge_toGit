@@ -12,7 +12,7 @@
         <div class="article-header">
             <div class="article-icon"></div>
             <div class="article-details">
-                <h1 class="article-title">Paper Details</h1>
+            <h1 class="article-title"> OVERVIEW OF THE PAPER</h1>
                 <p>Paper Title: {{ paper.title}} </p>
                 <p>Author Name: {{ paper.author.first_name}}  {{ paper.author.last_name }}</p>
                 <p>Submission Date: {{ paper.submission_date }}</p>
@@ -23,7 +23,6 @@
         </div>
 
         {% if current_user.role == 'admin' %}
-        <h3 class="mt-4">Paper Progress</h3>
         <table class="table table-bordered table-striped">
             <thead class="thead-dark">
                 <tr>
@@ -58,10 +57,10 @@
                         <form method="POST" action="{{ url_for('admins_view_paper_detail', paper_id=paper.id) }}">
                             <label for="status">Status:</label>
                             <select id="status" name="status" class="form-control form-control-sm">
-                                <option value="needs_reviewer" {% if paper.status == 'needs_reviewer' %} selected {% endif %}>Needs Reviewer</option>
-                                <option value="under_review" {% if paper.status == 'under_review' %} selected {% endif %}>Under Review</option>
-                                <option value="needs_revision" {% if paper.status == 'needs_revision' %} selected {% endif %}>Needs Revision</option>
-                                <option value="being_resubmitted" {% if paper.status == 'being_resubmitted' %} selected {% endif %}>Being Resubmitted</option>
+                                <option value="needs reviewer" {% if paper.status == 'needs reviewer' %} selected {% endif %}>Needs Reviewer</option>
+                                <option value="under review" {% if paper.status == 'under review' %} selected {% endif %}>Under Review</option>
+                                <option value="needs revision" {% if paper.status == 'needs revision' %} selected {% endif %}>Needs Revision</option>
+                                <option value="being resubmitted" {% if paper.status == 'being resubmitted' %} selected {% endif %}>Being Resubmitted</option>
                                 <option value="rejected" {% if paper.status == 'rejected' %} selected {% endif %}>Rejected</option>
                                 <option value="approved" {% if paper.status == 'approved' %} selected {% endif %}>Approved</option>
                                 <option value="published" {% if paper.status == 'published' %} selected {% endif %}>Published</option>

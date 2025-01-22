@@ -59,7 +59,7 @@
         <h1 class="mb-4">Welcome to the Reviewer's Dashboard</h1>
         
     <!-- Filter Form -->
-    <form method="GET" action="{{ url_for('admins_dashboard') }}">
+    <form method="GET" action="{{ url_for('reviewers_dashboard') }}">
         <label for="author_name">Author Name:</label>
         <input type="text" id="author_name" name="author_name" value="{{ request.args.get('author_name') }}">
 

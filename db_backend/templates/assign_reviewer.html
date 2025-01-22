@@ -97,22 +97,23 @@
             </tr>
         </thead>
         <tbody>
-            {% for user in users %}
                 <tr>
-                    <td>{{ user.first_name }} {{ user.last_name }}</td>
-                    <td>{{ user.preferences }}</td>
-                    <td>
-                        {% if user.role == "reviewer" %}
-                            <button class="btn btn-green" disabled>Already a Reviewer</button>
-                        {% else %}
-                            <form method="post" action="/make_reviewer">
-                                <input type="hidden" name="user_id" value="{{ user.id }}">
-                                <button type="submit" class="btn btn-red">Make a Reviewer</button>
-                            </form>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
+                    {% for user in users %}
+<tr>
+    <td>{{ user.first_name }} {{ user.last_name }}</td>
+    <td>{{ user.preferences }}</td>
+    <td>
+        {% if "reviewer" in user.role %}
+            <button class="btn btn-green" disabled>Already a Reviewer</button>
+        {% else %}
+            <form method="post" action="/make_reviewer">
+                <input type="hidden" name="user_id" value="{{ user.id }}">
+                <button type="submit" class="btn btn-red">Make a Reviewer</button>
+            </form>
+        {% endif %}
+    </td>
+</tr>
+{% endfor %}
         </tbody>
     </table>
 </div>
