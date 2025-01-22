@@ -1,0 +1,45 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+
+    font-family: 'Arial', sans-serif;
+    background-color:rgb(0, 0, 0);
+    text-align: center;
+}
+
+
+
+/* Header Section */
+.header {
+    background-color: #896A67;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    font-size: 30px;
+    font-family: 'Courier', sans-serif;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+}
+
+.header .profile-icon {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    background-color: #6B4D57;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header .profile-icon img {
+    width: 20px;
+    height: 20px;
+}

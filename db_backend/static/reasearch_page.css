@@ -1,0 +1,34 @@
+.content{
+    background-color:#ffeae8;
+    margin: 30px;
+    padding: 150px;
+    width: 1000px;
+    height: 800px;
+    border-radius: 10px;
+    
+}
+
+.list{
+    background-color: aliceblue;
+    margin: 30px;
+    padding: 80px;
+    height:auto;
+    width:auto;
+}
+
+.container{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.box{
+    padding: 10px;
+}
+
+.end{
+    font-size: 20px;
+    color: aliceblue;
+    font-weight: bold;
+}

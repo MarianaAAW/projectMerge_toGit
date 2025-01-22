@@ -1,23 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel ="stylesheet" href="../static/main.css">
-    <title>Login</title>
-</head>
-<body>
-    <h1>Login</h1>
+{% extends "layout.html"%}
+{%block content %}
+<link rel="stylesheet" href="../static/login.css"> 
+
+<div class="container">
+
+
+    <div class="login">
+     <h1>Login</h1>
+
     <form method="POST" action="{{ url_for('login') }}">
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="password" name="password" placeholder="Password" required>
+       <!--  <div class="mb-3"> -->
+            <label for="exampleFormControlInput1" class="form-label design">Email address</label>
+            <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
+          <!-- </div -->
+        <!-- <input type="email" name="email" placeholder="Email" required> -->
+        <label for="inputPassword5" class="form-label password">Password</label>
+        <input type="password" id="inputPassword5" class="form-control" aria-describedby="passwordHelpBlock">
+        <div id="passwordHelpBlock" class="form-text">
+            Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.
+        </div>
+        <!-- <input type="password" name="password" placeholder="Password" required> -->
         <button type="submit">Login</button>
     </form>
     <a href="{{ url_for('register') }}">Don't have an account? Register</a>
-</body>
-</html>
+     </div>
+</div>
 
-{% with messages = get_flashed_messages(with_categories=True) %}
+
+{% endblock %}
+
+
+<!-- {% with messages = get_flashed_messages(with_categories=True) %}
     {% if messages %}
         <ul>
             {% for category, message in messages %}
@@ -25,4 +38,4 @@
             {% endfor %}
         </ul>
     {% endif %}
-{% endwith %}
+{% endwith %} -->
