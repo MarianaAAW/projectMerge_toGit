@@ -458,7 +458,7 @@ def submit_paper():
         # Extract form fields
         title = request.form.get('title')
         theme = request.form.get('theme')
-        description = request.form.get('description', '')  # Default to an empty string if not provided
+        description = request.form.get('Description')  # Default to an empty string if not provided
         content = request.form.get('content')  # Content from CKEditor
 
         # Validate mandatory fields

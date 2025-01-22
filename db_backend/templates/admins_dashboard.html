@@ -112,7 +112,8 @@
                 <option value="formal_science" {% if request.args.get('theme')=='Formal_Science' %} selected {% endif
                     %}>Formal Science</option>
             </select>
-
+            <button type="submit">Filter</button>
+        </form>
         <!-- List of Papers -->
         <div class="display">
             {% for paper in papers %}
