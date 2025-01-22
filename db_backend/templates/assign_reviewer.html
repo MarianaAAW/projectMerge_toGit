@@ -13,25 +13,6 @@
             text-align: center;
         }
 
-        /* Header Section */
-        .header {
-            margin-top: 50px;
-        }
-
-        .header img {
-            width: 80px;
-            height: auto;
-        }
-
-        .header h1 {
-            font-size: 28px;
-            color: #333;
-            margin: 20px 0;
-        }
-
-        
-
-        /* Table Section */
         .table-container {
             margin: 40px auto;
             width: 70%;
@@ -86,35 +67,42 @@
     </style>
 </head>
 <body>
-<!-- Table Section -->
-<div class="table-container">
-    <table>
-        <thead>
-            <tr>
-                <th>User Name</th>
-                <th>Preferences</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
+    <!-- Table Section -->
+    <div class="table-container">
+        <h1>Assign a Reviewer</h1>
+        <table>
+            <thead>
                 <tr>
-                    {% for user in users %}
-<tr>
-    <td>{{ user.first_name }} {{ user.last_name }}</td>
-    <td>{{ user.preferences }}</td>
-    <td>
-        {% if "reviewer" in user.role %}
-            <button class="btn btn-green" disabled>Already a Reviewer</button>
-        {% else %}
-            <form method="post" action="/make_reviewer">
-                <input type="hidden" name="user_id" value="{{ user.id }}">
-                <button type="submit" class="btn btn-red">Make a Reviewer</button>
-            </form>
-        {% endif %}
-    </td>
-</tr>
-{% endfor %}
-        </tbody>
-    </table>
-</div>
-</body>   
+                    <th>User Name</th>
+                    <th>Preferences</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.first_name }} {{ user.last_name }}</td>
+                    <td>{{ user.preferences }}</td>
+                    <td>
+                        {% if "reviewer" in user.role %}
+                            <button class="btn btn-green" disabled>Already a Reviewer</button>
+                            <form method="post" action="{{ url_for('assign_reviewer', paper_id=paper.id) }}" style="display:inline;">
+                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                                <input type="hidden" name="paper_id" value="{{ paper.id }}">
+                                <button type="submit" class="btn btn-blue">Assign to Paper</button>
+                            </form>
+                        {% else %}
+                            <form method="post" action="{{ url_for('make_reviewer') }}">
+                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                                <input type="hidden" name="paper_id" value="{{ paper.id }}">
+                                <button type="submit" class="btn btn-red">Make a Reviewer</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

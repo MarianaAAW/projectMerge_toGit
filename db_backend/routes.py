@@ -423,33 +423,55 @@ def admins_final_review(paper_id):
 
     return render_template('admins_final_review.html', paper=paper, reviews=reviews, admin_review=admin_review)
 
-@app.route('/assign_reviewer', methods=['GET'])
-def assign_reviewer():
-    # Fetch all users except the admin
+@app.route('/assign_reviewer/<int:paper_id>', methods=['GET', 'POST'])
+def assign_reviewer(paper_id):
+    print(f"Accessing assign_reviewer with paper_id: {paper_id}")
+    paper = Paper.query.get_or_404(paper_id)
+    
+    if request.method == 'POST':
+        user_id = request.form.get('user_id')
+        print(f"Received POST request with user_id: {user_id}")
+        user = User.query.get(user_id)
+        if user:
+            if 'reviewer' not in user.role:
+                user.role += ' & reviewer'
+            paper.reviewers.append(user)
+            db.session.commit()
+            print(f"Assigned {user.first_name} {user.last_name} to paper {paper.id}")
+            flash(f'{user.first_name} {user.last_name} has been assigned as a reviewer.', 'success')
+            return redirect(url_for('assign_reviewer', paper_id=paper_id))
+        else:
+            flash('User not found.', 'error')
+    
     users = User.query.filter(User.role != 'admin').all()
-    return render_template('assign_reviewer.html', users=users)
+    return render_template('assign_reviewer.html', users=users, paper=paper)
 
 @app.route('/make_reviewer', methods=['POST'])
 def make_reviewer():
     user_id = request.form.get('user_id')
-    if user_id:
+    paper_id = request.form.get('paper_id')
+    if user_id and paper_id:
         user = User.query.get(user_id)
         if user:
-            # Update the role based on the current role
-            if user.role == 'researcher':
-                user.role = 'researcher & reviewer'
-            db.session.commit()
-            flash(f"{user.first_name} {user.last_name} is now assigned as a reviewer.", "success")
+            if 'reviewer' not in user.role:
+                user.role += ' & reviewer'
+                db.session.commit()
+                print(f"User {user.first_name} {user.last_name} has been made a reviewer")
+                flash(f'{user.first_name} {user.last_name} has been made a reviewer.', 'success')
+            else:
+                flash(f'{user.first_name} {user.last_name} is already a reviewer.', 'info')
         else:
-            flash("User not found.", "error")
+            flash('User not found.', 'error')
     else:
-        flash("Invalid user ID.", "error")
-    return redirect(url_for('assign_reviewer'))
+        flash('Missing user_id or paper_id.', 'error')
+    return redirect(url_for('assign_reviewer', paper_id=paper_id))
 
 @app.route('/reviewers_dashboard', methods=['GET'])
+@login_required
 def reviewers_dashboard():
-    # Add logic for the reviewer's dashboard here
-    return render_template('reviewers_dashboard.html')
+    # Assuming current_user is the logged-in user
+    assigned_papers = Paper.query.filter(Paper.reviewers.any(id=current_user.id)).all()
+    return render_template('reviewers_dashboard.html', papers=assigned_papers)
 
 @app.route('/submit_paper', methods=['GET', 'POST']) 
 @login_required

@@ -3,11 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reviewer Dashboard</title>
+    <title>Reviewer's Dashboard</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #ffffff;
+            color: #333;
+            text-align: center;
+        }
+
+        .table-container {
+            margin: 40px auto;
+            width: 70%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 16px;
+        }
+
+        table th, table td {
+            text-align: left;
+            padding: 12px 20px;
+            border: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #f3ebf7;
+            color: #333;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
         }
 
         h1 {
@@ -98,25 +127,27 @@
         <button type="submit">Filter</button>
     </form>
 
-        <h2>Assigned Papers</h2>
-        <ul class="paper-list">
-            {% for paper in assigned_papers %}
-            <li class="paper-item">
-                <h2>Title: {{ paper.title }}</h2>
-                <p>Author: {{ paper.author }}</p>
-                <p>Description: {{ paper.description }}</p>
-                <p class="submission-date">Submission Date: {{ paper.submission_date }}</p>
-                <p class="theme">Theme: {{ paper.theme }}</p>
-                <p>Status: {{ paper.status }}</p>
-                <!-- Go to Reviewing Page Button -->
-                <div class="go-to-reviewing-page">
-                    <a href="{{ url_for('reviewing_page', paper_id=paper.id) }}">
-                        <button>Review a Paper</button>
-                    </a>
-                </div>
-            </li>
-            {% endfor %}
-        </ul>
+        <div class="table-container">
+            <h1>Assigned Papers</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Paper Title</th>
+                        <th>Author</th>
+                        <th>Submission Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for paper in papers %}
+                    <tr>
+                        <td>{{ paper.title }}</td>
+                        <td>{{ paper.author.first_name }} {{ paper.author.last_name }}</td>
+                        <td>{{ paper.submission_date }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
