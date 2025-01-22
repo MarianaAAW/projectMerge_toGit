@@ -22,7 +22,10 @@
         <p><strong>Description:</strong> {{ paper.description }}</p>
         <p><strong>Theme:</strong> {{ paper.theme }}</p>
         <p><strong>Status:</strong> {{ paper.status }}</p>
-
+         <!-- "Check & Add Reviews" Button -->
+        <a href="{{ url_for('admins_review', paper_id=paper.id) }}" class="top-right-button btn btn-primary">
+            Check & Add Reviews
+        </a>
         <!-- Assign Reviewer Section -->
         {% if current_user.role == 'admin' %}
         <h2>Manage Reviewers</h2>
