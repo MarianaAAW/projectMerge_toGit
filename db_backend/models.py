@@ -38,9 +38,9 @@ class Paper(db.Model):
     publish_date = db.Column(db.DateTime, default=datetime.utcnow)
     status = db.Column(db.String(100), default="needs reviewer")  
     pdf_filename = db.Column(db.String(255), nullable=True)  # Optional
-    reviewers = db.relationship('User', backref='paper', lazy=True)
+    reviewers = db.relationship('User', secondary='paper_reviewers', backref='revieweded_papers')
     old_version_id = db.Column(db.Integer, db.ForeignKey('paper.id'), nullable=True)  # Link to the old version
-    description = db.Column(db.String(500), nullable=False)  # New column for short description
+    description = db.Column(db.String(500), nullable=True)  # New column for short description
 
     # Relationship to track old version
     old_version = db.relationship('Paper', remote_side=[id], backref='resubmitted_paper')
@@ -107,3 +107,10 @@ class Notification(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
     user = db.relationship('User', backref='notifications')
+
+
+paper_reviewers = db.Table(
+    'paper_reviewers',
+    db.Column('paper_id', db.Integer, db.ForeignKey('paper.id')),
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'))
+)

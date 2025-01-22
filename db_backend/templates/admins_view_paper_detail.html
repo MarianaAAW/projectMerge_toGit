@@ -5,75 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paper Progress</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .top-right-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+    </style>
 </head>
 <body>
     <div class="container mt-5">
-        <!-- Article Details -->
-        <div class="article-header">
-            <div class="article-icon"></div>
-            <div class="article-details">
-            <h1 class="article-title"> OVERVIEW OF THE PAPER</h1>
-                <p>Paper Title: {{ paper.title}} </p>
-                <p>Author Name: {{ paper.author.first_name}}  {{ paper.author.last_name }}</p>
-                <p>Submission Date: {{ paper.submission_date }}</p>
-                <p>Description: {{ paper.description }}</p>
-                <p>Theme: {{ paper.theme }}</p>
-                <p>Status: {{ paper.status }}</p>
-            </div>
-        </div>
+        <!-- Paper Overview -->
+        <h1>Paper Overview</h1>
+        <p><strong>Title:</strong> {{ paper.title }}</p>
+        <p><strong>Submission Date:</strong> {{ paper.submission_date }}</p>
+        <p><strong>Description:</strong> {{ paper.description }}</p>
+        <p><strong>Theme:</strong> {{ paper.theme }}</p>
+        <p><strong>Status:</strong> {{ paper.status }}</p>
 
+        <!-- Assign Reviewer Section -->
         {% if current_user.role == 'admin' %}
-        <table class="table table-bordered table-striped">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Reviewers Assigned</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                    <th>Update Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        {% if reviewers %}
-                            {% for reviewer in reviewers %}
-                                {{ reviewer.first_name }} {{ reviewer.last_name }}{% if not loop.last %}, {% endif %}
-                            {% endfor %}
-                        {% else %}
-                            No reviewers assigned
-                        {% endif %}
-                    </td>
-                    <td>{{ paper.status }}</td>
-                    <td>
-                        {% if paper.status == 'needs reviewer' %}
-                            <a href="{{ url_for('assign_reviewer', paper_id=paper.id) }}" class="btn btn-primary btn-sm">Assign Reviewer</a>
-                        {% elif paper.status == 'approved' %}
-                            <form action="{{ url_for('publish_paper', paper_id=paper.id) }}" method="post" class="d-inline">
-                                <button type="submit" class="btn btn-success btn-sm">Publish</button>
-                            </form>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <form method="POST" action="{{ url_for('admins_view_paper_detail', paper_id=paper.id) }}">
-                            <label for="status">Status:</label>
-                            <select id="status" name="status" class="form-control form-control-sm">
-                                <option value="needs reviewer" {% if paper.status == 'needs reviewer' %} selected {% endif %}>Needs Reviewer</option>
-                                <option value="under review" {% if paper.status == 'under review' %} selected {% endif %}>Under Review</option>
-                                <option value="needs revision" {% if paper.status == 'needs revision' %} selected {% endif %}>Needs Revision</option>
-                                <option value="being resubmitted" {% if paper.status == 'being resubmitted' %} selected {% endif %}>Being Resubmitted</option>
-                                <option value="rejected" {% if paper.status == 'rejected' %} selected {% endif %}>Rejected</option>
-                                <option value="approved" {% if paper.status == 'approved' %} selected {% endif %}>Approved</option>
-                                <option value="published" {% if paper.status == 'published' %} selected {% endif %}>Published</option>
-                            </select>
-                            <button type="submit" class="btn btn-outline-primary btn-sm mt-2">Update</button>
-                        </form>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        {% else %}
-        <p>You do not have access to this page.</p>
+        <h2>Manage Reviewers</h2>
+        {% if paper.status == 'needs reviewer' %}
+            <a href="{{ url_for('assign_reviewer', paper_id=paper.id) }}" class="btn btn-primary">Assign Reviewers</a>
         {% endif %}
+
+        <h3>Reviewers Assigned:</h3>
+        {% if reviewers %}
+            <ul>
+                {% for reviewer in reviewers %}
+                <li>{{ reviewer.first_name }} {{ reviewer.last_name }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No reviewers assigned yet.</p>
+        {% endif %}
+        {% endif %}
+
+        <!-- Update Status -->
+        <h2>Update Paper Status</h2>
+        <form method="POST" action="{{ url_for('admins_view_paper_detail', paper_id=paper.id) }}">
+            <label for="status">Status:</label>
+            <select id="status" name="status" class="form-control">
+                <option value="needs reviewer" {% if paper.status == 'needs reviewer' %} selected {% endif %}>Needs Reviewer</option>
+                <option value="under review" {% if paper.status == 'under review' %} selected {% endif %}>Under Review</option>
+                <option value="needs revision" {% if paper.status == 'needs revision' %} selected {% endif %}>Needs Revision</option>
+                <option value="rejected" {% if paper.status == 'rejected' %} selected {% endif %}>Rejected</option>
+                <option value="published" {% if paper.status == 'published' %} selected {% endif %}>Published</option>
+            </select>
+            <button type="submit" class="btn btn-success mt-3">Update Status</button>
+        </form>
     </div>
 </body>
 </html>

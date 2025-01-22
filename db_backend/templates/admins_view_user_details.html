@@ -5,6 +5,7 @@
 </head>
 <body>
     <h1>User Details</h1>
+    {% if user %}
     <table border="1">
         <thead>
             <tr>
@@ -19,7 +20,6 @@
             </tr>
         </thead>
         <tbody>
-            {% for user in users %}
             <tr>
                 <td>{{ user['id'] }}</td>
                 <td>{{ user['email'] }}</td>
@@ -30,8 +30,10 @@
                 <td>{{ user['approved_papers'] }}</td>
                 <td>{{ user['assigned_papers'] }}</td>
             </tr>
-            {% endfor %}
         </tbody>
     </table>
+    {% else %}
+    <p>No user data available.</p>
+    {% endif %}
 </body>
 </html>

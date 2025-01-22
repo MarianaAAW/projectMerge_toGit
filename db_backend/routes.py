@@ -4,7 +4,7 @@ from flask import  abort, render_template, request, redirect, url_for, flash, se
 from db_backend import app,db
 from flask_migrate import Migrate
 from flask_ckeditor import CKEditor
-from db_backend.models import  Draft, Notification, User, Paper, Review # I
+from db_backend.models import  Draft, Notification, ReviewerAssignment, User, Paper, Review # I
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
@@ -296,35 +296,50 @@ def admins_dashboard():
     papers = paper_query.all()
     return render_template('admins_dashboard.html', papers=papers, users=users)
 
-
-@app.route('/admins_view_user_details', methods=['GET'])
-def admins_view_user_details():
+@app.route('/admins_view_user_details/<int:user_id>', methods=['GET'])
+def admins_view_user_details(user_id):
     try:
-        # Query all users
-        users = User.query.all()  # Proper SQLAlchemy query using the User model
-        
-        # Convert user data to a list of dictionaries
-        user_data = [
-            {
-                "id": user.id,
-                "email": user.email,
-                "first_name": user.first_name,
-                "last_name": user.last_name,
-                "preferences": user.preferences,
-                "role": user.role,
-                "approved_papers": user.approved_papers,
-                "assigned_papers": user.assigned_papers
-            }
-            for user in users
-        ]
-        
+        # Query the specific user by ID
+        user = User.query.get(user_id)
+
+        # If user does not exist, handle the error
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        # Convert user data to a dictionary
+        user_data = {
+            "id": user.id,
+            "email": user.email,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "preferences": user.preferences,
+            "role": user.role,
+            "approved_papers": user.approved_papers,
+            "assigned_papers": user.assigned_papers,
+        }
+
         # Render the template and pass the user data
-        return render_template('admins_view_user_details.html', users=user_data)
+        return render_template('admins_view_user_details.html', user=user_data)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route('/admins_view_paper_detail/<int:paper_id>', methods=['GET'])
+@app.route('/admins_view_paper_detail/<int:paper_id>', methods=['GET', 'POST'])
+def admins_view_paper_detail(paper_id):
+    paper = Paper.query.get_or_404(paper_id)
+    reviewers = paper.reviewers
+
+    if request.method == 'POST':
+        new_status = request.form.get('status')
+        if new_status and new_status != paper.status:
+            paper.status = new_status
+            db.session.commit()
+            flash("Paper status updated successfully.")
+
+    return render_template('admins_view_paper_detail.html', paper=paper, reviewers=reviewers)
+
+'''    
+@app.route('/admins_view_paper_detail/<int:paper_id>', methods=['GET', 'POST'])
 def admins_view_paper_detail(paper_id):
     # Fetch the paper details from the database using the paper_id
     paper = Paper.query.filter_by(id=paper_id).first()
@@ -343,8 +358,16 @@ def admins_view_paper_detail(paper_id):
     #reviewer = db.session.query(User).filter(User.id.in_(paper.reviewer_id)).all()
     #print("reviewers : ",reviewer,"---------------------------------------")
 
+    # If the form is submitted (POST request), update the status
+    if request.method == 'POST':
+        new_status = request.form.get('status')  # Get the new status from the form
+        if new_status and new_status != paper.status:  # If the status has changed
+            paper.status = new_status  # Update the paper's status
+            db.session.commit()  # Commit the change to the database
+
     # Return the paper details to the template
     return render_template('admins_view_paper_detail.html', paper=paper, reviewers=reviewer)
+'''
 
 @app.route('/admins_review/<int:paper_id>', methods=['GET', 'POST'])
 @login_required
@@ -400,28 +423,6 @@ def admins_final_review(paper_id):
 
     return render_template('admins_final_review.html', paper=paper, reviews=reviews, admin_review=admin_review)
 
-'''
-@app.route('/assign_reviewer', methods=['GET'])
-def assign_reviewer():
-    # Fetch all users except the admin
-    users = User.query.filter(User.role != 'admin').all()
-    return render_template('assign_reviewer.html', users=users)
-
-@app.route('/make_reviewer', methods=['POST'])
-def make_reviewer():
-    user_id = request.form.get('user_id')
-    if user_id:
-        user = User.query.get(user_id)
-        if user:
-            user.role = 'researcher & reviewer'
-            db.session.commit()
-            flash(f"{user.first_name} {user.last_name} is now a reviewer.", "success")
-        else:
-            flash("User not found.", "error")
-    else:
-        flash("Invalid user ID.", "error")
-    return redirect(url_for('assign_reviewer'))
-'''
 @app.route('/assign_reviewer', methods=['GET'])
 def assign_reviewer():
     # Fetch all users except the admin
@@ -449,11 +450,6 @@ def make_reviewer():
 def reviewers_dashboard():
     # Add logic for the reviewer's dashboard here
     return render_template('reviewers_dashboard.html')
-
-
-
-
-
 
 @app.route('/submit_paper', methods=['GET', 'POST']) 
 @login_required
