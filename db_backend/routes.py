@@ -215,44 +215,35 @@ def my_profile():
 @login_required
 def researchers_dashboard():
    # Get filter values from the request
-    author_name = request.args.get('author_name', '')
-    article_name = request.args.get('article_name', '')
-    search = request.args.get('search', '')
-    theme = request.args.get('theme', '')
-    status = request.args.get('status', '')
-    sort_by_date = request.args.get('sort_by_date', 'latest')
-
-    # Assuming you have a way to get the logged-in user's ID (e.g., from the session)
+    author_id = request.args.get('author_id')
+    theme = request.args.get('theme')
+    submission_date = request.args.get('submission_date')
     user_id = current_user.id
-
     # Build the query
-    paper_query = Paper.query.filter_by(author_id=user_id)
+    paper_query = Paper.query.filter(Paper.author_id == user_id)
+    papers = paper_query
 
-    if author_name:
-        print(f"Filtering by author name: {author_name}")
-        paper_query = paper_query.join(User).filter(
-            (User.first_name.like(f'%{author_name}%')) | 
-            (User.last_name.like(f'%{author_name}%'))
-        )
-    if article_name:
-        print(f"Filtering by article name: {article_name}")
-        paper_query = paper_query.filter(Paper.title.like(f'%{article_name}%'))
-    if search:
-        print(f"Filtering by search: {search}")
-        paper_query = paper_query.filter(Paper.description.like(f'%{search}%'))
     if theme:
-        print(f"Filtering by theme: {theme}")
-        paper_query = paper_query.filter(Paper.theme.like(f'%{theme}%'))
-    if status:
-        print(f"Filtering by status: {status}")
-        paper_query = paper_query.filter(Paper.status == status)
-    if sort_by_date == 'latest':
-        print("Sorting by latest date")
-        paper_query = paper_query.order_by(Paper.submission_date.desc())
-    else:
-        print("Sorting by earliest date")
-        paper_query = paper_query.order_by(Paper.submission_date.asc())
-
+        if theme == "Natural Science":
+            first_1 = Paper.query.filter(Paper.theme == "Natural Science", Paper.author_id == user_id)
+            return render_template('researchers_dashboard.html', papers=first_1)
+        elif theme == "Social Science":
+            second_2 = Paper.query.filter(Paper.theme == "Social Science", Paper.author_id ==user_id)
+            return render_template('researchers_dashboard.html', papers=second_2)
+        else:
+            third_3 = Paper.query.filter(Paper.theme == "Formal Science", Paper.author_id ==user_id)
+            return render_template('researchers_dashboard.html', papers=third_3)
+    if submission_date:
+        if submission_date == "old to new":
+            new = Paper.query.filter(Paper.author_id == user_id).order_by(Paper.submission_date)
+            return render_template('researchers_dashboard.html', papers=new)
+        elif submission_date == "new to old":
+            late = Paper.query.filter(Paper.author_id == user_id).order_by(Paper.submission_date.desc())
+            return render_template('researchers_dashboard.html', papers=late)
+        else:
+            return render_template('researchers_dashboard.html', papers=papers)
+    return render_template('researchers_dashboard.html', papers=papers)
+    
     papers = paper_query.all()
     print(f"Fetched papers: {papers}")
 
