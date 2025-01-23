@@ -335,11 +335,11 @@ def admins_dashboard():
 
 
 
-@app.route('/admins_view_user_details', methods=['GET'])
-def admins_view_user_details():
+@app.route('/admins_view_user_details/<int:user_id>', methods=['GET'])
+def admins_view_user_details(user_id):
     try:
         # Query the specific user by ID
-        user = User.query.get(User.id)
+        user = User.query.get(user_id)
 
         # If user does not exist, handle the error
         if not user:
