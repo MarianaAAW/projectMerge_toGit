@@ -164,36 +164,36 @@ def logout():
 
 @app.route('/my_home', methods=['GET'])
 def my_home():
-    search_query = request.args.get('search')
-    author_query = request.args.get('author')
-    theme_query = request.args.get('theme')
-    sort_by_date = request.args.get('sort_by_date', 'latest')
-    article_name = request.args.get('article_name')
+    theme = request.args.get('theme')
+    submission_date = request.args.get('submission_date')
 
+    paper_query = Paper.query.filter(Paper.status == 'published')  # Only show published papers
+    #user_query = User.query
+    #users = user_query.all()
+    papers = paper_query
 
-    query = Paper.query.filter(Paper.status == 'published')  # Only show published papers
+    if theme:
+        if theme == "Natural Science":
+            first_1 = Paper.query.filter(Paper.theme == "Natural Science", Paper.status == 'published')
+            return render_template('my_home.html', papers=first_1)#, users=users)
+        elif theme == "Social Science":
+            second_2 = Paper.query.filter(Paper.theme == "Social Science", Paper.status == 'published')
+            return render_template('my_home.html', papers=second_2)#, users=users)
+        else:
+            third_3 = Paper.query.filter(Paper.theme == "Formal Science", Paper.status == 'published')
+            return render_template('my_home.html', papers=third_3)#, users=users)
+    if submission_date:
+        if submission_date == "old to new":
+            new = Paper.query.filter(Paper.status == 'published').order_by(Paper.submission_date)
+            return render_template('my_home.html', papers=new)#, users=users)
+        elif submission_date == "new to old":
+            late = Paper.query.filter(Paper.status == 'published').order_by(Paper.submission_date.desc())
+            return render_template('my_home.html', papers=late)#, users=users)
+        else:
+            return render_template('my_home.html', papers=papers)#, users=users)
+    return render_template('my_home.html', papers=papers)#, users=users)
+  
     
-    if article_name:
-        query = query.filter(Paper.title.contains(article_name))
-
-    if search_query:
-        query = query.filter(Paper.title.contains(search_query) | Paper.content.contains(search_query))
-
-    if author_query:
-        query = query.filter(Paper.author.first_name.like(f'%{author_query}%') | Paper.author.last_name.like(f'%{author_query}%'))
-
-    if theme_query:
-        query = query.filter(Paper.theme.contains(theme_query))
-
-    if sort_by_date == 'latest':
-        query = query.order_by(Paper.publish_date.desc())
-    elif sort_by_date == 'oldest':
-        query = query.order_by(Paper.publish_date.asc())
-
-    papers = query.all()
-
-    return render_template('my_home.html', papers=papers)
-
 @app.route('/my_profile')
 def my_profile():
     # Check if the user is logged in
@@ -290,8 +290,9 @@ def researchers_check_reviews():
 def admins_dashboard():
     # Get filters for papers from the request arguments
     theme = request.args.get('theme')
-    role = request.args.get('role')
     submission_date = request.args.get('submission_date')
+    role = request.args.get('role')
+    
     # Build the query for fetching papers
     paper_query = Paper.query
     user_query = User.query
@@ -325,10 +326,8 @@ def admins_dashboard():
         print("role:",role,type(role))
         if role == "researcher":
             usr_1 = User.query.filter(User.role == "researcher").all()
-            print("-------------------- im here ----------------------")
             return render_template('admins_dashboard.html', papers=papers, users=usr_1)
         else: 
-            print("-------------------- Else here ------------------")
             usr_2 = User.query.filter(User.role == "researcher & reviewer").all()
             return render_template('admins_dashboard.html', papers=papers, users=usr_2)
         
