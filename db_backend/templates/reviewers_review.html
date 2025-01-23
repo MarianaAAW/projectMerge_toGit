@@ -1,22 +1,29 @@
-{% extends "base.html" %}
-
-{% block title %}Check Reviews{% endblock %}
-
-{% block content %}
-<h2>Research Paper & Reviews Received</h2>
-
-<!-- Display Paper Title and Content -->
-<div id="paper-content">
+<h2>Research Paper & Add Reviews</h2>
+<!-- Box Container -->
+<div class="content-box">
+    <style>
+        .paper-content {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            height: 80vh; /* Adjust the height as needed */
+            width: 100%; /* Adjust the width as needed */
+            overflow: auto; /* Add scroll if content overflows */
+        }
+    </style>
+    
+    <!-- Display Paper Title and Content -->
     <h3>Paper Title: {{ paper.title }}</h3>
-    <p>{{ paper.content }}</p> <!-- Display the full paper content -->
+    <div id="paper-content" class="paper-content">
+        {{ paper.content | safe }}
+    </div>
+
+    <!-- Reviewer Comment Section -->
+    <h3>Reviewer's Review</h3>
+    <form method="POST" action="{{ url_for('reviewers_review', paper_id=paper.id) }}">
+        <textarea name="reviewer's_review" placeholder="Write your review here..." required></textarea>
+        <button type="submit">Submit Review</button>
+    </form>
 </div>
-
-<!-- Reviewer Comment Section -->
-<h3>Reviewer's Review</h3>
-<form method="POST" action="{{ url_for('admin_add_comment', paper_id=paper.id) }}">
-    <textarea name="Reviewer's_review" placeholder="Write your review here..." required></textarea>
-    <button type="submit">Submit Review</button>
-</form>
-{% endblock %}
-
-

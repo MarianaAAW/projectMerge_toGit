@@ -1,0 +1,50 @@
+{% block content %}
+<h1>Research Paper & Reviews Received</h1>
+
+<!-- Box Container -->
+<div class="content-box">
+    <style>
+        .paper-content {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            height: 80vh; /* Adjust the height as needed */
+            width: 100%; /* Adjust the width as needed */
+            overflow: auto; /* Add scroll if content overflows */
+        }
+    </style>
+
+    <!-- Display Paper Title and Content -->
+    <h2 class="paper-title">Title: {{ paper.title }}</h2>
+    <div class="paper-content">
+        {% if paper.pdf_path %}
+        <a href="{{ url_for('download_pdf', paper_id=paper.id) }}">Download PDF</a>
+        {% else %}
+        {{ paper.content | safe }}
+        {% endif %}
+    </div>
+
+    <!-- Display Reviews -->
+    <div id="review-list">
+        <h3>Reviews:</h3>
+        {% for review in reviews %}
+            <div class="review-entry">
+                <h3>Review by Reviewer ID: {{ review.reviewer_id }}</h3>
+                <p><strong>Date:</strong> {{ review.review_date.strftime('%Y-%m-%d') }}</p>
+                <p><strong>Review Text:</strong> {{ review.review_text }}</p>
+            </div>
+            <hr>
+        {% endfor %}
+    </div>
+
+    <!-- Admin Comment Section -->
+    <h3>Admin's Review:</h3>
+    <form method="POST" action="{{ url_for('admin_review', paper_id=paper.id) }}">
+        <textarea name="admin_review" placeholder="Write your review here..." required></textarea>
+        <button type="submit">Submit Review</button>
+    </form>
+</div>
+
+{% endblock %}

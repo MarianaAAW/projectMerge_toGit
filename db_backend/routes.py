@@ -55,6 +55,18 @@ def research_page():
 
     return render_template('research_page.html', papers=papers)
 
+@app.route('/paper/<int:paper_id>', methods=['GET'])
+def view_paper(paper_id):
+    # Fetch the paper by its ID from the database
+    paper = Paper.query.get_or_404(paper_id)
+
+    # Ensure the paper is published before allowing access
+    if paper.status != 'published':
+        return redirect(url_for('research_page'))
+
+    # Render the paper in a template
+    return render_template('view_paper.html', paper=paper)
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -338,40 +350,10 @@ def admins_view_paper_detail(paper_id):
 
     return render_template('admins_view_paper_detail.html', paper=paper, reviewers=reviewers)
 
-'''    
-@app.route('/admins_view_paper_detail/<int:paper_id>', methods=['GET', 'POST'])
-def admins_view_paper_detail(paper_id):
-    # Fetch the paper details from the database using the paper_id
-    paper = Paper.query.filter_by(id=paper_id).first()
-    print("paper : ",paper,"-------------------------------------------------------",type(paper))
-    print("paper : ",paper.id,"-------------------------------------------------------",type(paper))
 
-
-    # If the paper doesn't exist, return a 404 error
-    if not paper:   
-        abort(404)
-
-    # Fetch the reviewers (if any) associated with the paper
-    #print("Type : ",type(db.session.query(User).filter_by(paper.reviewer_id).all()),"-------------------")
-    reviewer = User.query.all()
-
-    #reviewer = db.session.query(User).filter(User.id.in_(paper.reviewer_id)).all()
-    #print("reviewers : ",reviewer,"---------------------------------------")
-
-    # If the form is submitted (POST request), update the status
-    if request.method == 'POST':
-        new_status = request.form.get('status')  # Get the new status from the form
-        if new_status and new_status != paper.status:  # If the status has changed
-            paper.status = new_status  # Update the paper's status
-            db.session.commit()  # Commit the change to the database
-
-    # Return the paper details to the template
-    return render_template('admins_view_paper_detail.html', paper=paper, reviewers=reviewer)
-'''
-
-@app.route('/admins_review/<int:paper_id>', methods=['GET', 'POST'])
+@app.route('/admin_review/<int:paper_id>', methods=['GET', 'POST'])
 @login_required
-def admins_review(paper_id):
+def admin_review(paper_id):
     if current_user.role != 'admin':
         flash("You do not have permission to access this page.")
         return redirect(url_for('my_home'))  # Redirect to home if the user isn't an admin
@@ -401,7 +383,7 @@ def admins_review(paper_id):
         flash("Review submitted successfully.")
         return redirect(url_for('admin_final_review', paper_id=paper_id))  # Redirect to final review page
 
-    return render_template('admins_review.html', paper=paper, reviews=reviews, admin_review=admin_review)
+    return render_template('admin_review.html', paper=paper, reviews=reviews, admin_review=admin_review)
 
 # Route for Admin's Final Review Page (admins_final_review.html)
 @app.route('/admins_final_review/<int:paper_id>')
@@ -472,6 +454,51 @@ def reviewers_dashboard():
     # Assuming current_user is the logged-in user
     assigned_papers = Paper.query.filter(Paper.reviewers.any(id=current_user.id)).all()
     return render_template('reviewers_dashboard.html', papers=assigned_papers)
+
+@app.route('/reviewers_review/<int:paper_id>', methods=['GET', 'POST'])
+@login_required
+def reviewers_review(paper_id):
+    # Fetch the paper
+    paper = Paper.query.get_or_404(paper_id)
+    
+    # Check if the logged-in user is the assigned reviewer
+    if current_user not in paper.reviewers:
+        flash("You are not authorized to review this paper.", "danger")
+        return redirect(url_for('reviewers_dashboard'))
+    
+    if request.method == 'POST':
+        # Capture review details from the form
+        review_text = request.form.get('review_text')
+        status = request.form.get('status')  # e.g., 'approved', 'needs_revision', 'rejected'
+        
+        if not review_text or not status:
+            flash("Please provide all required details.", "warning")
+            return redirect(request.url)
+        
+        # Save the review to the database
+        review = Review(
+            paper_id=paper_id,
+            reviewer_id=current_user.id,
+            review_text=review_text,
+            status=status,
+            review_date=datetime.utcnow()
+        )
+        db.session.add(review)
+        
+        # Update paper status if necessary
+        paper.status = status
+        db.session.commit()
+        
+        flash("Review submitted successfully.", "success")
+        return redirect(url_for('reviewers_dashboard'))
+    
+    return render_template('reviewers_review.html', paper=paper)
+
+@app.route('/reviewers_view_paper/<int:paper_id>', methods=['GET'])
+@login_required
+def reviewers_view_paper(paper_id):
+    paper = Paper.query.get_or_404(paper_id)
+    return render_template('reviewers_view_paper.html', paper=paper)
 
 @app.route('/submit_paper', methods=['GET', 'POST']) 
 @login_required
@@ -562,65 +589,3 @@ def resubmit_paper(paper_id):
 
     return redirect(url_for('my_profile'))
 
-'''
-# Optionally, create a notification for the author
-    notification = Notification(user_id=paper.author_id, message="Your paper has been resubmitted as an old version.")
-    db.session.add(notification)
-    db.session.commit()
-
-    return "Paper resubmitted successfully."
-
-
-    # Create a notification for the author
-    notification = Notification(user_id=paper.author_id, message="Your paper has been resubmitted and marked as an old version.")
-    db.session.add(notification)
-    db.session.commit()
-'''
-
-@app.route('/notifications')
-def notifications():
-    user = User.query.get(current_user.id)  # Assuming you're using Flask-Login for user session
-    unread_notifications = Notification.query.filter_by(user_id=user.id, status="unread").all()
-    
-    # Optionally, mark notifications as read when viewed
-    for notification in unread_notifications:
-        notification.status = "read"
-    db.session.commit()
-
-    return render_template('notifications.html', notifications=unread_notifications)
-
-'''
-def assign_reviewer(paper_id, reviewer_id):
-    # Create a notification for the reviewer
-    notification = Notification(user_id=reviewer_id, message=f"You have been assigned to review the paper {paper_id}.")
-    db.session.add(notification)
-    db.session.commit()
-
-def update_paper_status(paper_id, new_status):
-    paper = Paper.query.get(paper_id)
-    paper.status = new_status
-    db.session.commit()
-
-    # Create a notification for the author
-    notification = Notification(user_id=paper.author_id, message=f"Your paper status has been updated to {new_status}.")
-    db.session.add(notification)
-    db.session.commit()
-
-@app.route('/notifications/<int:user_id>', methods=['GET'])
-def get_notifications(user_id):
-    notifications = Notification.query.filter_by(user_id=user_id, status="unread").all()
-    return jsonify([{
-        "id": n.id,
-        "message": n.message,
-        "timestamp": n.timestamp
-    } for n in notifications])
-
-@app.route('/notifications/mark-as-read/<int:notification_id>', methods=['POST'])
-def mark_notification_as_read(notification_id):
-    notification = Notification.query.get(notification_id)
-    if notification:
-        notification.status = "read"
-        db.session.commit()
-        return jsonify({"message": "Notification marked as read."}), 200
-    return jsonify({"error": "Notification not found."}), 404
-'''
