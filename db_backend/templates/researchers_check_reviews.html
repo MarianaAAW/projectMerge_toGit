@@ -1,5 +1,10 @@
 {% block content %}
 <h2>Admin's Review</h2>
+<p>Go back to your Homepage. <a href="{{ url_for('my_home') }}">Homepage</a></p>
+    <p>Go back to your Profile. <a href="{{ url_for('my_profile') }}">My Profile</a></p>
+    <p>Go back to your Researcher's Dashboard. <a href="{{ url_for('researchers_dashboard') }}">Researcher's Dashboard</a></p>
+    <p>Logout of your portal here. <a href="{{ url_for('logout') }}">Logout</a></p>
+
 
 <!-- Display Admin Reviews -->
 <div id="review-list">

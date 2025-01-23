@@ -59,6 +59,9 @@
     <div class="container">
         <h1>Welcome to the Reviewer's Dashboard</h1>
         <h2>Assigned Papers</h2>
+        <p>Go back to your Homepage. <a href="{{ url_for('my_home') }}">Homepage</a></p>
+        <p>Go back to your Profile. <a href="{{ url_for('my_profile') }}">My Profile</a></p>
+        <p>Logout of your portal here. <a href="{{ url_for('logout') }}">Logout</a></p>
        <!-- Filter Form -->
        <form method="GET" action="{{ url_for('reviewers_dashboard') }}">
         <label for="submission_date">Submission Date:</label>

@@ -57,7 +57,9 @@
 
 <body>
     <h1>Welcome to Writer's Dashboard</h1>
-
+    <p>Go back to your Homepage. <a href="{{ url_for('my_home') }}">Homepage</a></p>
+    <p>Go back to your Profile. <a href="{{ url_for('my_profile') }}">My Profile</a></p>
+    <p>Logout of your portal here. <a href="{{ url_for('logout') }}">Logout</a></p>
     <!-- Submitted Papers Section -->
     <section>
         <h2>Submitted Papers</h2>

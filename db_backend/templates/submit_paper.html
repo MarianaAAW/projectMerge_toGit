@@ -8,6 +8,10 @@
 </head>
 <body>
     <h1>Submit Your Paper</h1>
+    <p>Go back to your Homepage. <a href="{{ url_for('my_home') }}">Homepage</a></p>
+    <p>Go back to your Profile. <a href="{{ url_for('my_profile') }}">My Profile</a></p>
+    <p>Go back to your Researcher's Dashboard. <a href="{{ url_for('researchers_dashboard') }}">Researcher's Dashboard</a></p>
+    <p>Logout of your portal here. <a href="{{ url_for('logout') }}">Logout</a></p>
 
     <!-- Form to Submit the Paper -->
     <form method="POST" action="{{ url_for('submit_paper') }}" enctype="multipart/form-data" onsubmit="return validateForm()">
@@ -81,7 +85,7 @@
     {% if messages %}
         <ul>
             {% for category, message in messages %}
-                <li class="{{ category }}">{{ message }}</li>
+                <li class="flash-{{ category }}">{{ message }}</li>
             {% endfor %}
         </ul>
     {% endif %}
