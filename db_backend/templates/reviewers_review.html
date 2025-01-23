@@ -16,6 +16,13 @@
             width: 100%; /* Adjust the width as needed */
             overflow: auto; /* Add scroll if content overflows */
         }
+        .review-entry {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+        }
     </style>
     
     <!-- Display Paper Title and Content -->
@@ -30,4 +37,16 @@
         <textarea name="reviewer's_review" placeholder="Write your review here..." required></textarea>
         <button type="submit">Submit Review</button>
     </form>
+
+    <!-- Display Reviewer's Reviews -->
+    <div id="reviewer-review-list">
+        <h3>Your Reviews:</h3>
+        {% for review in reviewer_reviews %}
+            <div class="review-entry">
+                <p><strong>Date:</strong> {{ review.review_date.strftime('%Y-%m-%d') }}</p>
+                <p><strong>Review Text:</strong> {{ review.review_text }}</p>
+            </div>
+            <hr>
+        {% endfor %}
+    </div>
 </div>

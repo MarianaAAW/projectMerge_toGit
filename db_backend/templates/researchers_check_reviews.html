@@ -7,7 +7,7 @@
 
 
 <!-- Display Admin Reviews -->
-<div id="review-list">
+<div id="admin-review-list">
     {% for review in reviews %}
         <div class="review-entry">
             <p><strong>Date:</strong> {{ review.review_date.strftime('%Y-%m-%d') }}</p>
@@ -18,16 +18,11 @@
 
 <style>
     .review-entry {
-        padding: 20px;
         margin-bottom: 20px;
-        border: 1px solid #ccc;
+        padding: 10px;
+        border: 1px solid #ddd;
         border-radius: 5px;
         background-color: #f9f9f9;
-    }
-
-    h3 {
-        font-size: 18px;
-        color: #444;
     }
 </style>
 {% endblock %}

@@ -256,7 +256,7 @@ def researchers_view_paper(paper_id):
     paper = Paper.query.get_or_404(paper_id)
     return render_template('researchers_view_paper.html', paper=paper)
 
-@app.route('/researchers_check_reviews', methods=['GET'])
+@app.route('/researchers_check_reviews')
 @login_required
 def researchers_check_reviews():
     # Ensure the user has the role 'researcher' or both 'researcher' and 'reviewer'
@@ -373,19 +373,25 @@ def admin_review(paper_id):
         return redirect(url_for('my_home'))  # Redirect to home if the user isn't an admin
 
     paper = Paper.query.get_or_404(paper_id)
-    reviews = Review.query.filter_by(paper_id=paper_id).all()
+    admin_reviews = Review.query.filter_by(paper_id=paper_id, is_admin_review=True).all()
+    reviewer_reviews = Review.query.filter_by(paper_id=paper_id, is_admin_review=False).all()
 
     # Check if the admin already provided a review
     admin_review = Review.query.filter_by(paper_id=paper_id, reviewer_id=current_user.id, is_admin_review=True).first()
 
     if request.method == 'POST':
+        review_text = request.form.get('review_text')
+        if not review_text:
+            flash("Review text is required.")
+            return redirect(url_for('admin_review', paper_id=paper_id))
+
         # If there's an existing review, update it
         if admin_review:
-            admin_review.review_text = request.form['review_text']
+            admin_review.review_text = review_text
         else:
             # Otherwise, create a new admin review
             new_review = Review(
-                review_text=request.form['review_text'],
+                review_text=review_text,
                 status='received',
                 reviewer_id=current_user.id,
                 paper_id=paper_id,
@@ -395,9 +401,10 @@ def admin_review(paper_id):
         
         db.session.commit()
         flash("Review submitted successfully.")
-        return redirect(url_for('admin_final_review', paper_id=paper_id))  # Redirect to final review page
+        return redirect(url_for('admin_review', paper_id=paper_id))  # Redirect to the same page to see the updated reviews
 
-    return render_template('admin_review.html', paper=paper, reviews=reviews, admin_review=admin_review)
+    return render_template('admin_review.html', paper=paper, admin_reviews=admin_reviews, reviewer_reviews=reviewer_reviews, admin_review=admin_review)
+
 
 # Route for Admin's Final Review Page (admins_final_review.html)
 @app.route('/admins_final_review/<int:paper_id>')
@@ -497,41 +504,31 @@ def reviewers_dashboard():
 @app.route('/reviewers_review/<int:paper_id>', methods=['GET', 'POST'])
 @login_required
 def reviewers_review(paper_id):
-    # Fetch the paper
     paper = Paper.query.get_or_404(paper_id)
     
-    # Check if the logged-in user is the assigned reviewer
-    if current_user not in paper.reviewers:
-        flash("You are not authorized to review this paper.", "danger")
-        return redirect(url_for('reviewers_dashboard'))
-    
     if request.method == 'POST':
-        # Capture review details from the form
-        review_text = request.form.get('review_text')
-        status = request.form.get('status')  # e.g., 'approved', 'needs_revision', 'rejected'
-        
-        if not review_text or not status:
-            flash("Please provide all required details.", "warning")
-            return redirect(request.url)
-        
-        # Save the review to the database
-        review = Review(
-            paper_id=paper_id,
-            reviewer_id=current_user.id,
+        review_text = request.form.get("reviewer's_review")
+        if not review_text:
+            flash("Review text is required.")
+            return redirect(url_for('reviewers_review', paper_id=paper_id))
+
+        new_review = Review(
             review_text=review_text,
-            status=status,
-            review_date=datetime.utcnow()
+            status='received',
+            reviewer_id=current_user.id,
+            paper_id=paper_id,
+            is_admin_review=False
         )
-        db.session.add(review)
-        
-        # Update paper status if necessary
-        paper.status = status
+        db.session.add(new_review)
         db.session.commit()
-        
-        flash("Review submitted successfully.", "success")
-        return redirect(url_for('reviewers_dashboard'))
-    
-    return render_template('reviewers_review.html', paper=paper)
+        flash("Review submitted successfully.")
+        return redirect(url_for('reviewers_review', paper_id=paper_id))
+
+    # Fetch reviews made by the current reviewer for this paper
+    reviewer_reviews = Review.query.filter_by(paper_id=paper_id, reviewer_id=current_user.id, is_admin_review=False).all()
+
+    return render_template('reviewers_review.html', paper=paper, reviewer_reviews=reviewer_reviews)
+
 
 @app.route('/reviewers_view_paper/<int:paper_id>', methods=['GET'])
 @login_required
