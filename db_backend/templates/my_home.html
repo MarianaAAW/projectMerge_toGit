@@ -1,14 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Research Papers</title>
-</head>
+    <title>Published Research Papers</title>
+    <style>
+        body {
+            margin: 10px;
+            font-family: 'Arial', sans-serif;
+            background-color: #ffffff;
+            color: #333;
+            text-align: left;
+        }
 
-<body>
+        .container {
+            margin: 40px auto;
+            width: 80%;
+            text-align: left;
+        }
+        .papers-list{
+            padding-top: 15px;
+            margin-top: 10px;
+        }
+        .paper-box {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            margin-left: 20px;
+            margin-right: 20px;
+            background: #f9f9f9;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .paper-box h2 {
+            margin: 0 0 15px;
+            color: #007bff;
+        }
+
+        .paper-box p {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+
+        .paper-box a {
+            display: inline-block;
+            margin-top: 15px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .paper-box a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+</body>
+
     <h1>Published Research Papers</h1>
+  <!-- My Profile Access -->
+  <p>See you paper progress and submit a paper here. <a href="{{ url_for('my_profile') }}">My Profile</a></p>
 
     <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -20,6 +76,7 @@
     </ul>
     {% endif %}
     {% endwith %}
+
 
     <!-- Search and Filter Form -->
     <form method="GET" action="{{ url_for('my_home') }}">
@@ -47,24 +104,26 @@
         <button type="submit">Filter</button>
     </form>
 
-    <!-- Published Papers List -->
-    {% if papers %}
-    <div class="papers-list">
-        {% for paper in papers %}
-        <div class="paper-item">
-            <h3><a href="{{ url_for('view_paper', paper_id=paper.id) }}">{{ paper.title }}</a></h3>
-            <p><strong>Author:</strong> {{ paper.author.first_name }} {{ paper.author.last_name }}</p>
-            <p><strong>Theme:</strong> {{ paper.theme }}</p>
-            <p><strong>Publish Date:</strong> {{ paper.publish_date.strftime('%Y-%m-%d') }}</p>
+
+        <!-- Published Papers List -->
+        {% if papers %}
+        <div class="papers-list">
+            {% for paper in papers %}
+                <div class="paper-box">
+                    <p><strong>Title:</strong> {{ paper.title }}</p>
+                    <p><strong>Author:</strong> {{ paper.author.first_name }} {{ paper.author.last_name }}</p>
+                    <p><strong>Theme:</strong> {{ paper.theme }}</p>
+                    <p><strong>Description:</strong> {{ paper.description }}</p>
+                    <p><strong>Publish Date:</strong> {{ paper.publish_date.strftime('%Y-%m-%d') }}</p>
+                    <a href="{{ url_for('view_paper', paper_id=paper.id) }}">View Paper</a>
+                </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-    </div>
     {% else %}
-    <p>No published papers found.</p>
+        <p class="no-papers">No published papers found.</p>
     {% endif %}
 
-    <!-- My Profile Access -->
-    <p>See you paper progress and submit a paper here. <a href="{{ url_for('my_profile') }}">My Profile</a></p>
+
 </body>
 
 </html>

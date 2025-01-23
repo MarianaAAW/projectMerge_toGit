@@ -3,10 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Research Papers</title>
+    <title>Published Research Papers</title>
+    <style>
+        body {
+            margin: 10px;
+            font-family: 'Arial', sans-serif;
+            background-color: #ffffff;
+            color: #333;
+            text-align: left;
+        }
+
+        .container {
+            margin: 40px auto;
+            width: 80%;
+            text-align: left;
+        }
+        .papers-list{
+            padding-top: 15px;
+            margin-top: 10px;
+        }
+        .paper-box {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            margin-left: 20px;
+            margin-right: 20px;
+            background: #f9f9f9;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .paper-box h2 {
+            margin: 0 0 15px;
+            color: #007bff;
+        }
+
+        .paper-box p {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+
+        .paper-box a {
+            display: inline-block;
+            margin-top: 15px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .paper-box a:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
-<body>
+</body>
     <h1>Published Research Papers</h1>
+ <!-- Login/Register Message -->
+ {% if not current_user.is_authenticated %}
+ <p>You need to be logged in to submit a paper. <a href="{{ url_for('login') }}">Login</a> | Don't have an account? <a href="{{ url_for('register') }}">Register</a></p>
+{% else %}
+ <p>Welcome, {{ current_user.first_name }}! <a href="{{ url_for('logout') }}">Logout</a></p>
+{% endif %}
+
+    <!-- Search and Filter Form -->
+    <form method="GET" action="{{ url_for('my_home') }}">
+        <label for="submission_date">Submission Date:</label>
+        <select id="submission_date" name="submission_date">
+            <option value="">All</option>
+            <option value="old to new" {% if request.args.get('submission_date')=='old_to_new' %} selected {% endif %}>
+                Old to New</option>
+            <option value="new to old" {% if request.args.get('submission_date')=='new_to_old' %} selected {% endif %}>
+                New to Old
+            </option>
+        </select>
+        <button type="submit">Filter</button>
+        <label for="theme">Theme:</label>
+        <select id="theme" name="theme">
+            <option value="">All</option>
+            <option value="Social Science" {% if request.args.get('theme')=='Social_Science' %} selected {% endif %}>
+                Social Science</option>
+            <option value="Natural Science" {% if request.args.get('theme')=='Natural_Science' %} selected {% endif %}>
+                Natural Science
+            </option>
+            <option value="formal_science" {% if request.args.get('theme')=='Formal_Science' %} selected {% endif %}>
+                Formal Science</option>
+        </select>
+        <button type="submit">Filter</button>
+    </form>
 
     <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -20,52 +107,24 @@
     {% endwith %}
 
     <!-- Search and Filter Form -->
-    <form method="GET" action="{{ url_for('research_page') }}">
-        <input type="text" name="search" placeholder="Search by title or keyword" value="{{ request.args.get('search', '') }}">
-        <label for="article_name">Article Name:</label>
-        <input type="text" id="article_name" name="article_name" value="{{ request.args.get('article_name') }}">
-        
-        <label for="author">Author:</label>
-        <input type="text" name="author" placeholder="Author name" value="{{ request.args.get('author', '') }}">
-
-        <label for="theme">Theme:</label>
-        <select name="theme">
-            <option value="">All</option>
-            <option value="Natural Science" {% if request.args.get('theme') == 'Natural Science' %}selected{% endif %}>Natural Science</option>
-            <option value="Social Science" {% if request.args.get('theme') == 'Social Science' %}selected{% endif %}>Social Science</option>
-            <option value="Formal Science" {% if request.args.get('theme') == 'Formal Science' %}selected{% endif %}>Formal Science</option>
-        </select>
-
-        <label for="sort_by_date">Sort by Date:</label>
-        <select name="sort_by_date">
-            <option value="latest" {% if request.args.get('sort_by_date') == 'latest' %}selected{% endif %}>Latest</option>
-            <option value="oldest" {% if request.args.get('sort_by_date') == 'oldest' %}selected{% endif %}>Oldest</option>
-        </select>
-
-        <button type="submit">Search</button>
-    </form>
 
     <!-- Published Papers List -->
     {% if papers %}
         <div class="papers-list">
             {% for paper in papers %}
-                <div class="paper-item">
-                    <h3><a href="{{ url_for('view_paper', paper_id=paper.id) }}">{{ paper.title }}</a></h3>
+                <div class="paper-box">
+                    <p><strong>Title:</strong> {{ paper.title }}</p>
                     <p><strong>Author:</strong> {{ paper.author.first_name }} {{ paper.author.last_name }}</p>
                     <p><strong>Theme:</strong> {{ paper.theme }}</p>
+                    <p><strong>Description:</strong> {{ paper.description }}</p>
                     <p><strong>Publish Date:</strong> {{ paper.publish_date.strftime('%Y-%m-%d') }}</p>
+                    <a href="{{ url_for('view_paper', paper_id=paper.id) }}">View Paper</a>
                 </div>
             {% endfor %}
         </div>
     {% else %}
-        <p>No published papers found.</p>
+        <p class="no-papers">No published papers found.</p>
     {% endif %}
 
-    <!-- Login/Register Message -->
-    {% if not current_user.is_authenticated %}
-        <p>You need to be logged in to submit a paper. <a href="{{ url_for('login') }}">Login</a> | Don't have an account? <a href="{{ url_for('register') }}">Register</a></p>
-    {% else %}
-        <p>Welcome, {{ current_user.first_name }}! <a href="{{ url_for('logout') }}">Logout</a></p>
-    {% endif %}
 </body>
 </html>
