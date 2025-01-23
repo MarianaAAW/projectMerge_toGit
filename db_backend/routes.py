@@ -470,7 +470,33 @@ def make_reviewer():
 @login_required
 def reviewers_dashboard():
     # Assuming current_user is the logged-in user
+    theme = request.args.get('theme')
+    submission_date = request.args.get('submission_date')
+    user_id = current_user.id
+
     assigned_papers = Paper.query.filter(Paper.reviewers.any(id=current_user.id)).all()
+    papers = assigned_papers
+
+    if theme:
+        if theme == "Natural Science":
+            first_1 = Paper.query.filter(Paper.theme == "Natural Science", Paper.reviewers.any(id=current_user.id)).all()
+            return render_template('reviewers_dashboard.html', papers=first_1)
+        elif theme == "Social Science":
+            second_2 = Paper.query.filter(Paper.theme == "Social Science", Paper.reviewers.any(id=current_user.id)).all()
+            return render_template('reviewers_dashboard.html', papers=second_2)
+        else:
+            third_3 = Paper.query.filter(Paper.theme == "Formal Science", Paper.reviewers.any(id=current_user.id)).all()
+            return render_template('reviewers_dashboard.html', papers=third_3)
+    if submission_date:
+        if submission_date == "old to new":
+            new = Paper.query.filter(Paper.reviewers.any(id=current_user.id)).order_by(Paper.submission_date)
+            return render_template('reviewers_dashboard.html', papers=new)
+        elif submission_date == "new to old":
+            late = Paper.query.filter(Paper.reviewers.any(id=current_user.id)).order_by(Paper.submission_date.desc())
+            return render_template('reviewers_dashboard.html', papers=late)
+        else:
+            return render_template('reviewers_dashboard.html', papers=papers)
+    
     return render_template('reviewers_dashboard.html', papers=assigned_papers)
 
 @app.route('/reviewers_review/<int:paper_id>', methods=['GET', 'POST'])
