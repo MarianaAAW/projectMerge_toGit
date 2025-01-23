@@ -100,6 +100,18 @@
     <div class="content">
         <!-- Filter Form -->
         <form method="GET" action="{{ url_for('admins_dashboard') }}">
+            <label for="submission_date">Submission Date:</label>
+            <select id="submission_date" name="submission_date">
+                <option value="">All</option>
+                <option value="old to new" {% if request.args.get('submission_date')=='old_to_new' %} selected {% endif
+                    %}>Old to New</option>
+                <option value="new to old" {% if request.args.get('submission_date')=='new_to_old' %} selected {% endif
+                    %}>
+                    New to Old
+                </option>
+            </select>
+            <button type="submit">Filter</button>
+
             <label for="theme">Theme:</label>
             <select id="theme" name="theme">
                 <option value="">All</option>
@@ -113,6 +125,7 @@
                     %}>Formal Science</option>
             </select>
             <button type="submit">Filter</button>
+
         </form>
         <!-- List of Papers -->
         <div class="display">
@@ -143,6 +156,19 @@
         <span class="arrow">▼</span>
     </div>
     <div class="content">
+        <!-- Filter Form -->
+        <form method="GET" action="{{ url_for('admins_dashboard') }}">
+            <label for="role">Role:</label>
+            <select id="role" name="role">
+                <option value="">All</option>
+                <option value="researcher & reviewer" {% if request.args.get('role')=='researcher_&_reviewer' %}
+                    selected {% endif %}>researcher & reviewer</option>
+                <option value="researcher" {% if request.args.get('role')=='researcher' %} selected {% endif %}>
+                    researcher</option>
+            </select>
+
+            <button type="submit">Filter</button>
+        </form>
 
         <!-- List of Users -->
         <div class="display">

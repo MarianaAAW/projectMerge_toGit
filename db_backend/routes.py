@@ -290,11 +290,14 @@ def researchers_check_reviews():
 def admins_dashboard():
     # Get filters for papers from the request arguments
     theme = request.args.get('theme')
+    role = request.args.get('role')
+    submission_date = request.args.get('submission_date')
     # Build the query for fetching papers
     paper_query = Paper.query
     user_query = User.query
     users = user_query.all()
-    
+    papers = paper_query.all()
+
     if theme:
         if theme == "Natural Science":
             first_1 = Paper.query.filter(Paper.theme == "Natural Science").all()
@@ -305,11 +308,36 @@ def admins_dashboard():
         else:
             third_3 = Paper.query.filter(Paper.theme == "Formal Science").all()
             return render_template('admins_dashboard.html', papers=third_3, users=users)
-    papers = paper_query.all()
+    
+    if submission_date:
+        if submission_date == "old to new":
+            new = Paper.query.order_by(Paper.submission_date).all()
+            print("------------aadNEWNEWNEWc--------", new)
+            return render_template('admins_dashboard.html', papers=new, users=users)
+        elif submission_date == "new to old":
+            late = Paper.query.order_by(Paper.submission_date.desc()).all()
+            print("------------LATE LATE--------", late)
+            return render_template('admins_dashboard.html', papers=late, users=users)
+        else:
+            return render_template('admins_dashboard.html', papers=papers, users=users)
+        
+    if role:
+        print("role:",role,type(role))
+        if role == "researcher":
+            usr_1 = User.query.filter(User.role == "researcher").all()
+            print("-------------------- im here ----------------------")
+            return render_template('admins_dashboard.html', papers=papers, users=usr_1)
+        else: 
+            print("-------------------- Else here ------------------")
+            usr_2 = User.query.filter(User.role == "researcher & reviewer").all()
+            return render_template('admins_dashboard.html', papers=papers, users=usr_2)
+        
     return render_template('admins_dashboard.html', papers=papers, users=users)
 
-@app.route('/admins_view_user_details/<int:user_id>', methods=['GET'])
-def admins_view_user_details(user_id):
+
+
+@app.route('/admins_view_user_details', methods=['GET'])
+def admins_view_user_details():
     try:
         # Query the specific user by ID
         user = User.query.get(user_id)
@@ -507,6 +535,7 @@ def submit_paper():
         # Extract form fields
         title = request.form.get('title')
         theme = request.form.get('theme')
+        description = request.form.get('Description')  # Default to an empty string if not provided
         description = request.form.get('Description')  # Default to an empty string if not provided
         content = request.form.get('content')  # Content from CKEditor
 
