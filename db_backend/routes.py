@@ -340,7 +340,7 @@ def admins_dashboard():
 def admins_view_user_details():
     try:
         # Query the specific user by ID
-        user = User.query.get(user_id)
+        user = User.query.get(User.id)
 
         # If user does not exist, handle the error
         if not user:
