@@ -1,5 +1,5 @@
 {% block content %}
-<h2>Admin's Review</h2>
+<h2>Reviews Received</h2>
 <p>Go back to your Homepage. <a href="{{ url_for('my_home') }}">Homepage</a></p>
     <p>Go back to your Profile. <a href="{{ url_for('my_profile') }}">My Profile</a></p>
     <p>Go back to your Researcher's Dashboard. <a href="{{ url_for('researchers_dashboard') }}">Researcher's Dashboard</a></p>
@@ -11,7 +11,7 @@
     {% for review in reviews %}
         <div class="review-entry">
             <p><strong>Date:</strong> {{ review.review_date.strftime('%Y-%m-%d') }}</p>
-            <p><strong>Review Text:</strong> {{ review.review_text }}</p>
+            <p><strong>Admin's Review:</strong> {{ review.review_text }}</p>
         </div>
     {% endfor %}
 </div>
